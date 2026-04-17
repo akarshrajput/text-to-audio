@@ -47,12 +47,34 @@ export async function signInWithPassword(formData: FormData) {
 }
 
 export async function registerWithPassword(formData: FormData) {
+  const fullName = String(formData.get("fullName") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
+  const confirmPassword = String(formData.get("confirmPassword") ?? "");
   const nextPath = getRedirectPath(formData);
 
+  if (fullName.length < 2) {
+    redirect(`/register?error=${encodeURIComponent("Please enter your full name.")}&next=${encodeURIComponent(nextPath)}`);
+  }
+
+  if (password.length < 8) {
+    redirect(`/register?error=${encodeURIComponent("Password must be at least 8 characters.")}&next=${encodeURIComponent(nextPath)}`);
+  }
+
+  if (password !== confirmPassword) {
+    redirect(`/register?error=${encodeURIComponent("Password and confirm password do not match.")}&next=${encodeURIComponent(nextPath)}`);
+  }
+
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName,
+      },
+    },
+  });
 
   if (error) {
     const safeMessage = mapAuthError(error.message);

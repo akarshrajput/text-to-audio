@@ -16,12 +16,21 @@ export default async function AccountPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const metadata = (user?.user_metadata ?? {}) as Record<string, unknown>;
+  const fullName =
+    (typeof metadata.full_name === "string" && metadata.full_name.trim()) ||
+    (typeof metadata.name === "string" && metadata.name.trim()) ||
+    "Name not set";
+
   return (
     <main className="site-container flex w-full flex-1 flex-col px-4 py-10 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold text-white">Account</h1>
 
       <section className="mt-8 w-full max-w-3xl rounded-2xl border border-white/10 bg-slate-900/60 p-6">
-        <p className="text-sm text-slate-300">Email</p>
+        <p className="text-sm text-slate-300">Full Name</p>
+        <p className="mt-1 text-lg font-medium text-white">{fullName}</p>
+
+        <p className="mt-4 text-sm text-slate-300">Email</p>
         <p className="mt-1 text-lg font-medium text-white">{user?.email}</p>
 
         <form action={signOut} className="mt-6">

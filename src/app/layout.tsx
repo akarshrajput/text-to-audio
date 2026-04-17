@@ -81,9 +81,9 @@ export default function RootLayout({
       lang="en"
       className={`${manrope.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-slate-950 text-slate-50">
+      <body className="min-h-screen bg-slate-950 text-slate-50">
         <div className="app-bg" />
-        <div className="relative flex min-h-full flex-col">
+        <div className="relative flex min-h-screen flex-col">
           <SiteHeader />
           {children}
           <SiteFooter />

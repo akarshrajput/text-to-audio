@@ -39,34 +39,58 @@ export default async function RegisterPage({
         <form action={registerWithPassword} className="mt-8 space-y-4 rounded-2xl border border-white/10 bg-slate-900/60 p-6">
           <input type="hidden" name="next" value={nextPath} />
 
-        <label className="block space-y-2 text-sm">
-          <span className="text-slate-300">Email</span>
-          <input
-            required
-            name="email"
-            type="email"
-            className="w-full rounded-xl border border-white/15 bg-slate-950 px-3 py-2 text-white outline-none ring-teal-400/40 transition focus:ring"
-            placeholder="you@company.com"
-          />
-        </label>
+          <label className="block space-y-2 text-sm">
+            <span className="text-slate-300">Full Name</span>
+            <input
+              required
+              name="fullName"
+              type="text"
+              minLength={2}
+              className="w-full rounded-xl border border-white/15 bg-slate-950 px-3 py-2 text-white outline-none ring-teal-400/40 transition focus:ring"
+              placeholder="Your full name"
+            />
+          </label>
 
-        <label className="block space-y-2 text-sm">
-          <span className="text-slate-300">Password</span>
-          <input
-            required
-            minLength={8}
-            name="password"
-            type="password"
-            className="w-full rounded-xl border border-white/15 bg-slate-950 px-3 py-2 text-white outline-none ring-teal-400/40 transition focus:ring"
-            placeholder="At least 8 characters"
-          />
-        </label>
+          <label className="block space-y-2 text-sm">
+            <span className="text-slate-300">Email</span>
+            <input
+              required
+              name="email"
+              type="email"
+              className="w-full rounded-xl border border-white/15 bg-slate-950 px-3 py-2 text-white outline-none ring-teal-400/40 transition focus:ring"
+              placeholder="you@company.com"
+            />
+          </label>
 
-        {error ? (
-          <p className="rounded-xl border border-rose-400/40 bg-rose-950/50 px-3 py-2 text-sm text-rose-200">
-            {error}
-          </p>
-        ) : null}
+          <label className="block space-y-2 text-sm">
+            <span className="text-slate-300">Password</span>
+            <input
+              required
+              minLength={8}
+              name="password"
+              type="password"
+              className="w-full rounded-xl border border-white/15 bg-slate-950 px-3 py-2 text-white outline-none ring-teal-400/40 transition focus:ring"
+              placeholder="At least 8 characters"
+            />
+          </label>
+
+          <label className="block space-y-2 text-sm">
+            <span className="text-slate-300">Confirm Password</span>
+            <input
+              required
+              minLength={8}
+              name="confirmPassword"
+              type="password"
+              className="w-full rounded-xl border border-white/15 bg-slate-950 px-3 py-2 text-white outline-none ring-teal-400/40 transition focus:ring"
+              placeholder="Re-enter password"
+            />
+          </label>
+
+          {error ? (
+            <p className="rounded-xl border border-rose-400/40 bg-rose-950/50 px-3 py-2 text-sm text-rose-200">
+              {error}
+            </p>
+          ) : null}
 
           <button className="w-full rounded-xl bg-teal-400 px-4 py-2.5 font-semibold text-slate-900 transition hover:bg-teal-300">
             Register
