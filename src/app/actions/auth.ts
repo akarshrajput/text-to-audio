@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { upsertAppUserProfile } from "@/lib/app-store";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function getRedirectPath(formData: FormData, fallback = "/dashboard") {
@@ -37,10 +38,14 @@ export async function signInWithPassword(formData: FormData) {
   const nextPath = getRedirectPath(formData);
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     redirect(`/login?error=${encodeURIComponent(error.message)}&next=${encodeURIComponent(nextPath)}`);
+  }
+
+  if (data.user) {
+    await upsertAppUserProfile(data.user);
   }
 
   redirect(nextPath);
@@ -79,6 +84,10 @@ export async function registerWithPassword(formData: FormData) {
   if (error) {
     const safeMessage = mapAuthError(error.message);
     redirect(`/register?error=${encodeURIComponent(safeMessage)}&next=${encodeURIComponent(nextPath)}`);
+  }
+
+  if (data.user) {
+    await upsertAppUserProfile(data.user);
   }
 
   // Direct register mode requires an immediate session after sign up.

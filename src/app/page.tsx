@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/json-ld";
+import { getComfyUiOnline } from "@/lib/app-store";
 import { absoluteUrl, buildMetadata, siteConfig } from "@/lib/seo";
 import { buildBreadcrumbSchema } from "@/lib/structured-data";
 
@@ -42,7 +43,9 @@ const faqs = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const comfyUiOnline = await getComfyUiOnline();
+
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -104,6 +107,25 @@ export default function Home() {
       <JsonLd data={softwareSchema} />
       <JsonLd data={faqSchema} />
       <JsonLd data={breadcrumbSchema} />
+
+      {!comfyUiOnline ? (
+        <section className="site-container px-4 pt-8 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-amber-300/30 bg-gradient-to-r from-amber-950/55 via-slate-900 to-slate-900 px-6 py-4 shadow-[0_20px_60px_rgba(0,0,0,0.25)] ring-1 ring-white/5 backdrop-blur">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+              <div className="flex items-start gap-3">
+                <span className="mt-1 inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-amber-400 shadow-[0_0_0_6px_rgba(251,191,36,0.14)]" />
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300">Service status</p>
+                  <p className="mt-1 text-base font-semibold text-white">Studio backend is temporarily unavailable.</p>
+                </div>
+              </div>
+              <span className="inline-flex w-fit rounded-full border border-amber-300/30 bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-200">
+                Coming soon
+              </span>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className="site-container px-4 pt-10 sm:px-6 lg:px-8">
         <div className="hero-stage p-8 sm:p-10 lg:p-14">
@@ -232,3 +254,4 @@ export default function Home() {
     </main>
   );
 }
+

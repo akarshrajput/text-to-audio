@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
+import { getAppUserProfile } from "@/lib/app-store";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = buildMetadata({
@@ -15,11 +16,13 @@ export default async function DashboardPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const profile = user ? await getAppUserProfile(user.id) : null;
 
   return (
     <main className="site-container flex w-full flex-1 flex-col px-4 py-10 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-      <p className="mt-2 text-slate-600">Signed in as {user?.email}</p>
+      <p className="mt-2 text-slate-600">Signed in as {profile?.email ?? user?.email}</p>
+      <p className="mt-1 text-sm text-slate-500">Role: {profile?.role ?? "user"}</p>
 
       <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link className="surface-card" href="/studio">

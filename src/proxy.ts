@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const PROTECTED_PREFIXES = ["/dashboard", "/library", "/account"];
+const PROTECTED_PREFIXES = ["/dashboard", "/library", "/account", "/admin"];
 
 function isProtectedPath(pathname: string) {
   return PROTECTED_PREFIXES.some(
@@ -63,5 +63,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/library/:path*", "/account/:path*"],
+  matcher: ["/dashboard/:path*", "/library/:path*", "/account/:path*", "/admin/:path*"],
 };

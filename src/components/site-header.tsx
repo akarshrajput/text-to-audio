@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getAppUserProfile } from "@/lib/app-store";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function SiteHeader() {
@@ -6,6 +7,7 @@ export async function SiteHeader() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const profile = user ? await getAppUserProfile(user.id) : null;
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 backdrop-blur-xl">
@@ -30,6 +32,11 @@ export async function SiteHeader() {
           <Link className="nav-link" href="/account" prefetch={false}>
             Account
           </Link>
+          {profile?.role === "admin" ? (
+            <Link className="nav-link rounded-full border border-teal-400/30 bg-teal-500/10 text-teal-700" href="/admin" prefetch={false}>
+              Admin
+            </Link>
+          ) : null}
           {!user && (
             <>
               <Link className="nav-link" href="/login" prefetch={false}>

@@ -1,6 +1,7 @@
 import { signOut } from "@/app/actions/auth";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
+import { getAppUserProfile } from "@/lib/app-store";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = buildMetadata({
@@ -16,11 +17,8 @@ export default async function AccountPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const metadata = (user?.user_metadata ?? {}) as Record<string, unknown>;
-  const fullName =
-    (typeof metadata.full_name === "string" && metadata.full_name.trim()) ||
-    (typeof metadata.name === "string" && metadata.name.trim()) ||
-    "Name not set";
+  const profile = user ? await getAppUserProfile(user.id) : null;
+  const fullName = profile?.fullName ?? user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? "Name not set";
 
   return (
     <main className="site-container flex w-full flex-1 flex-col px-4 py-10 sm:px-6 lg:px-8">
@@ -31,7 +29,10 @@ export default async function AccountPage() {
         <p className="mt-1 text-lg font-medium text-slate-900">{fullName}</p>
 
         <p className="mt-4 text-sm text-slate-600">Email</p>
-        <p className="mt-1 text-lg font-medium text-slate-900">{user?.email}</p>
+        <p className="mt-1 text-lg font-medium text-slate-900">{profile?.email ?? user?.email}</p>
+
+        <p className="mt-4 text-sm text-slate-600">Role</p>
+        <p className="mt-1 text-lg font-medium text-slate-900">{profile?.role ?? "user"}</p>
 
         <form action={signOut} className="mt-6">
           <button className="rounded-xl border border-rose-300/50 px-4 py-2 text-sm font-semibold text-rose-200 transition hover:border-rose-200 hover:text-white">

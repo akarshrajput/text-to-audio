@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { buildLyrics, buildTags, buildWorkflow } from "@/lib/song/prompt";
 import type { SongGenerateInput, SongGenerateResult } from "@/lib/song/types";
+import { getComfyUiBaseUrl } from "@/lib/app-store";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const requestSchema: z.ZodType<SongGenerateInput> = z.object({
@@ -26,12 +27,6 @@ const requestSchema: z.ZodType<SongGenerateInput> = z.object({
   kidSafe: z.boolean(),
   timeSignature: z.enum(["3", "4", "6"]),
 });
-
-const DEFAULT_COMFYUI_URL = "https://e54wgks2f9mg8n-7865.proxy.runpod.net";
-
-function getComfyBaseUrl() {
-  return (process.env.COMFYUI_BASE_URL ?? DEFAULT_COMFYUI_URL).replace(/\/$/, "");
-}
 
 function randomInt() {
   return Math.floor(Math.random() * 999_999_999);
@@ -131,7 +126,7 @@ export async function POST(request: Request) {
     }
 
     const input = parsed.data;
-    const comfyUrl = getComfyBaseUrl();
+    const comfyUrl = await getComfyUiBaseUrl();
     const seed = input.vibeLock ? input.seed : randomInt();
     const normalizedInput = { ...input, seed };
 
