@@ -62,7 +62,7 @@ export function buildMetadata({
           url: absoluteUrl("/opengraph-image"),
           width: 1200,
           height: 630,
-          alt: "SongCraft AI audio generation platform",
+          alt: "Songify AI audio generation platform",
         },
       ],
     },

@@ -6,7 +6,7 @@ import { buildBreadcrumbSchema } from "@/lib/structured-data";
 export const metadata: Metadata = buildMetadata({
   title: "About",
   description:
-    "Learn about SongCraft, a professional AI audio platform focused on text-to-audio, controllable speech, and artist-free music generation.",
+    "Learn about Songify, a professional AI audio platform focused on text-to-audio, controllable speech, and artist-free music generation.",
   path: "/about",
 });
 

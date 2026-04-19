@@ -5,7 +5,7 @@ import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
   title: "Login",
-  description: "Sign in to SongCraft to access your audio dashboard and saved library.",
+  description: "Sign in to Songify to access your audio dashboard and saved library.",
   path: "/login",
   noIndex: true,
 });
@@ -32,8 +32,8 @@ export default async function LoginPage({
   return (
     <main className="site-container flex w-full flex-1 px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-md">
-        <h1 className="text-3xl font-bold text-white">Welcome back</h1>
-        <p className="mt-2 text-sm text-slate-300">
+        <h1 className="text-3xl font-bold text-slate-900">Welcome back</h1>
+        <p className="mt-2 text-sm text-slate-600">
           Sign in to access your dashboard, library, and downloads.
         </p>
 
@@ -52,7 +52,7 @@ export default async function LoginPage({
         </label>
 
         <label className="block space-y-2 text-sm">
-          <span className="text-slate-300">Password</span>
+          <span className="text-slate-600">Password</span>
           <input
             required
             minLength={8}
@@ -80,7 +80,7 @@ export default async function LoginPage({
           </button>
         </form>
 
-        <p className="mt-5 text-sm text-slate-300">
+        <p className="mt-5 text-sm text-slate-600">
           New here?{" "}
           <Link className="text-teal-300 hover:text-teal-200" href={`/register?next=${encodeURIComponent(nextPath)}`}>
             Create account

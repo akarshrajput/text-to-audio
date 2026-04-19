@@ -4,7 +4,7 @@ import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
   title: "Audio Library",
-  description: "Private SongCraft audio library for authenticated users.",
+  description: "Private Songify audio library for authenticated users.",
   path: "/library",
   noIndex: true,
 });

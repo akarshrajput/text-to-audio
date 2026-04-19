@@ -16,7 +16,7 @@ export const servicePages: ServicePage[] = [
     description:
       "Convert text into clear, natural speech with controllable tone and delivery for content, apps, and narration workflows.",
     intro:
-      "SongCraft text to speech lets teams convert scripts into clean voice output for product demos, lessons, support flows, and social media audio.",
+      "Songify text to speech lets teams convert scripts into clean voice output for product demos, lessons, support flows, and social media audio.",
     useCases: [
       "Narration for explainers and tutorials",
       "Voice for web and mobile applications",
@@ -26,12 +26,12 @@ export const servicePages: ServicePage[] = [
       {
         question: "Can I control speaking style in text to speech?",
         answer:
-          "Yes. SongCraft supports tone and delivery controls so output can match formal, friendly, or expressive use cases.",
+          "Yes. Songify supports tone and delivery controls so output can match formal, friendly, or expressive use cases.",
       },
       {
         question: "Is text to speech suitable for product demos?",
         answer:
-          "Yes. Teams use SongCraft text to speech for demos, onboarding flows, and support walkthrough narration.",
+          "Yes. Teams use Songify text to speech for demos, onboarding flows, and support walkthrough narration.",
       },
     ],
   },
@@ -42,7 +42,7 @@ export const servicePages: ServicePage[] = [
     description:
       "Generate artist-free AI music from prompts, genres, and mood controls for videos, podcasts, products, and branded campaigns.",
     intro:
-      "SongCraft AI music generation transforms lyrics and style prompts into polished tracks with genre, tempo, structure, and mood controls.",
+      "Songify AI music generation transforms lyrics and style prompts into polished tracks with genre, tempo, structure, and mood controls.",
     useCases: [
       "Background music for content creators",
       "Brand music experiments and ad campaigns",
@@ -50,9 +50,9 @@ export const servicePages: ServicePage[] = [
     ],
     faqItems: [
       {
-        question: "Can SongCraft generate music without hiring artists?",
+        question: "Can Songify generate music without hiring artists?",
         answer:
-          "Yes. SongCraft is built for artist-free AI music generation with style, mood, and structure controls.",
+          "Yes. Songify is built for artist-free AI music generation with style, mood, and structure controls.",
       },
       {
         question: "Can I iterate music outputs quickly?",
@@ -68,7 +68,7 @@ export const servicePages: ServicePage[] = [
     description:
       "Create synthetic voices with controllable tone, pacing, and expression for product voice layers and content pipelines.",
     intro:
-      "SongCraft voice generation helps teams produce consistent voice output for multiple channels while maintaining style and delivery targets.",
+      "Songify voice generation helps teams produce consistent voice output for multiple channels while maintaining style and delivery targets.",
     useCases: [
       "Character and branded voice prototypes",
       "Multichannel campaign voice assets",
@@ -78,7 +78,7 @@ export const servicePages: ServicePage[] = [
       {
         question: "Is AI voice generation consistent across outputs?",
         answer:
-          "SongCraft focuses on consistent delivery controls so teams can maintain recognizable voice style across projects.",
+          "Songify focuses on consistent delivery controls so teams can maintain recognizable voice style across projects.",
       },
       {
         question: "Can voice generation be used for marketing assets?",
@@ -94,7 +94,7 @@ export const servicePages: ServicePage[] = [
     description:
       "Turn poems and literary text into expressive audio with natural pacing and emotional tone suitable for publishing and storytelling.",
     intro:
-      "SongCraft poem to audio mode captures rhythm, pauses, and emotional contour so written poetry can become engaging listening experiences.",
+      "Songify poem to audio mode captures rhythm, pauses, and emotional contour so written poetry can become engaging listening experiences.",
     useCases: [
       "Poetry publishing and audiobook samples",
       "Creative writing showcases",
@@ -104,7 +104,7 @@ export const servicePages: ServicePage[] = [
       {
         question: "Can poem-to-audio preserve rhythm and pauses?",
         answer:
-          "Yes. SongCraft poem workflows are tuned for natural pacing and expressive cadence in poetic text.",
+          "Yes. Songify poem workflows are tuned for natural pacing and expressive cadence in poetic text.",
       },
       {
         question: "Who uses poem-to-audio generation?",
@@ -120,7 +120,7 @@ export const servicePages: ServicePage[] = [
     description:
       "Adjust speech tone, intensity, and style so generated audio matches the context, audience, and communication intent.",
     intro:
-      "SongCraft speech tone tools provide practical controls for calm, energetic, formal, and expressive delivery profiles.",
+      "Songify speech tone tools provide practical controls for calm, energetic, formal, and expressive delivery profiles.",
     useCases: [
       "Tone matching for product announcements",
       "Localized communication variants",
@@ -135,7 +135,7 @@ export const servicePages: ServicePage[] = [
       {
         question: "Can I test multiple tone styles quickly?",
         answer:
-          "Yes. SongCraft lets you iterate tone, energy, and delivery so teams can compare options before publishing.",
+          "Yes. Songify lets you iterate tone, energy, and delivery so teams can compare options before publishing.",
       },
     ],
   },

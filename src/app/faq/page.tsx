@@ -6,25 +6,25 @@ import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/structured-data";
 export const metadata: Metadata = buildMetadata({
   title: "FAQ",
   description:
-    "Read common questions about SongCraft text-to-audio workflows, AI music generation, account access, and output storage.",
+    "Read common questions about Songify text-to-audio workflows, AI music generation, account access, and output storage.",
   path: "/faq",
 });
 
 const faqs = [
   {
-    question: "Can I use SongCraft without an account?",
+    question: "Can I use Songify without an account?",
     answer: "Yes, Studio allows a guest generation. Account registration unlocks repeat generation, downloads, and library storage.",
   },
   {
     question: "What audio workflows are supported?",
-    answer: "SongCraft supports text to speech, tone-guided speech, poem narration, and AI music generation from prompts.",
+    answer: "Songify supports text to speech, tone-guided speech, poem narration, and AI music generation from prompts.",
   },
   {
     question: "Where are generated files stored?",
-    answer: "For logged-in users, generated outputs are stored in Supabase Storage and indexed in your private SongCraft library.",
+    answer: "For logged-in users, generated outputs are stored in Supabase Storage and indexed in your private Songify library.",
   },
   {
-    question: "Can I use SongCraft for commercial projects?",
+    question: "Can I use Songify for commercial projects?",
     answer: "Commercial usage depends on your plan and legal terms. Contact sales for high-volume or enterprise scenarios.",
   },
 ];

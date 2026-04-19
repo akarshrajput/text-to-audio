@@ -1,26 +1,14 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Manrope } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { absoluteUrl, siteConfig } from "@/lib/seo";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-});
-
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
-  weight: ["400", "500"],
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "SongCraft | Text to Audio and AI Music Generation Platform",
-    template: "%s | SongCraft",
+    default: "Songify | Text to Audio and AI Music Generation Platform",
+    template: "%s | Songify",
   },
   description: siteConfig.description,
   keywords: siteConfig.keywords,
@@ -29,7 +17,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    title: "SongCraft | Text to Audio and AI Music Generation Platform",
+    title: "Songify | Text to Audio and AI Music Generation Platform",
     description: siteConfig.description,
     url: absoluteUrl("/"),
     siteName: siteConfig.name,
@@ -39,13 +27,13 @@ export const metadata: Metadata = {
         url: absoluteUrl("/opengraph-image"),
         width: 1200,
         height: 630,
-        alt: "SongCraft AI audio platform",
+        alt: "Songify AI audio platform",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "SongCraft | Text to Audio and AI Music Generation Platform",
+    title: "Songify | Text to Audio and AI Music Generation Platform",
     description: siteConfig.description,
     creator: siteConfig.twitterHandle,
     images: [absoluteUrl("/twitter-image")],
@@ -79,13 +67,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${plexMono.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
-      <body className="min-h-screen bg-slate-950 text-slate-50">
+        <body className="min-h-screen bg-white text-slate-900">
         <div className="app-bg" />
-        <div className="relative flex min-h-screen flex-col">
+          <div className="relative flex min-h-screen flex-col">
           <SiteHeader />
-          {children}
+            <div className="flex-1">{children}</div>
           <SiteFooter />
         </div>
       </body>

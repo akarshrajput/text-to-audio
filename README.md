@@ -1,4 +1,4 @@
-# SongCraft - Production Next.js App
+# Songify - Production Next.js App
 
 A production-structured Next.js 16 web app for AI song generation using ComfyUI (RunPod), Supabase auth, Supabase database, and Supabase storage.
 

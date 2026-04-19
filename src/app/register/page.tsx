@@ -5,7 +5,7 @@ import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
   title: "Register",
-  description: "Create your SongCraft account to unlock unlimited AI audio generation.",
+  description: "Create your Songify account to unlock unlimited AI audio generation.",
   path: "/register",
   noIndex: true,
 });
@@ -31,8 +31,8 @@ export default async function RegisterPage({
   return (
     <main className="site-container flex w-full flex-1 px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-md">
-        <h1 className="text-3xl font-bold text-white">Create your account</h1>
-        <p className="mt-2 text-sm text-slate-300">
+        <h1 className="text-3xl font-bold text-slate-900">Create your account</h1>
+        <p className="mt-2 text-sm text-slate-600">
           Register to unlock unlimited song creation, storage, and downloads.
         </p>
 
@@ -52,7 +52,7 @@ export default async function RegisterPage({
           </label>
 
           <label className="block space-y-2 text-sm">
-            <span className="text-slate-300">Email</span>
+            <span className="text-slate-600">Email</span>
             <input
               required
               name="email"
@@ -63,7 +63,7 @@ export default async function RegisterPage({
           </label>
 
           <label className="block space-y-2 text-sm">
-            <span className="text-slate-300">Password</span>
+            <span className="text-slate-600">Password</span>
             <input
               required
               minLength={8}
@@ -75,7 +75,7 @@ export default async function RegisterPage({
           </label>
 
           <label className="block space-y-2 text-sm">
-            <span className="text-slate-300">Confirm Password</span>
+            <span className="text-slate-600">Confirm Password</span>
             <input
               required
               minLength={8}
@@ -97,7 +97,7 @@ export default async function RegisterPage({
           </button>
         </form>
 
-        <p className="mt-5 text-sm text-slate-300">
+        <p className="mt-5 text-sm text-slate-600">
           Already have an account?{" "}
           <Link className="text-teal-300 hover:text-teal-200" href={`/login?next=${encodeURIComponent(nextPath)}`}>
             Login

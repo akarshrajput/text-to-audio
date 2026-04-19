@@ -13,11 +13,11 @@ const footerLinks = [
 
 export function SiteFooter() {
   return (
-    <footer className="mt-12 border-t border-white/10 bg-slate-950/70">
+    <footer className="mt-12 border-t border-slate-200 bg-slate-50">
       <div className="site-container grid w-full gap-6 px-4 py-8 sm:px-6 lg:px-8">
         <div>
-          <p className="text-sm font-semibold text-white">SongCraft</p>
-          <p className="mt-2 max-w-2xl text-sm text-slate-300">
+          <p className="text-sm font-semibold text-slate-900">Songify</p>
+          <p className="mt-2 max-w-2xl text-sm text-slate-600">
             Professional text-to-audio, speech tone, and AI music generation workflows for creators and teams.
           </p>
         </div>
@@ -27,14 +27,15 @@ export function SiteFooter() {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-full border border-white/15 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-cyan-300"
+              prefetch={false}
+              className="rounded-full border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-cyan-500 hover:text-cyan-600"
             >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <p className="text-xs text-slate-400">© {new Date().getFullYear()} SongCraft. All rights reserved.</p>
+        <p className="text-xs text-slate-500">© {new Date().getFullYear()} Songify. All rights reserved.</p>
       </div>
     </footer>
   );

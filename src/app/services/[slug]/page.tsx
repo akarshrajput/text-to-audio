@@ -21,7 +21,7 @@ export async function generateMetadata({
   if (!service) {
     return buildMetadata({
       title: "Service Not Found",
-      description: "The requested SongCraft service page was not found.",
+      description: "The requested Songify service page was not found.",
       path: `/services/${resolvedParams.slug}`,
       noIndex: true,
     });
@@ -66,34 +66,34 @@ export default async function ServiceDetailPage({
       <JsonLd data={serviceSchema} />
       <JsonLd data={faqSchema} />
 
-      <h1 className="max-w-4xl text-4xl font-bold text-white">{service.name}</h1>
-      <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-300">{service.intro}</p>
+      <h1 className="max-w-4xl text-4xl font-bold text-slate-900">{service.name}</h1>
+      <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600">{service.intro}</p>
 
-      <section className="mt-8 max-w-4xl rounded-2xl border border-white/10 bg-slate-900/60 p-6">
-        <h2 className="text-xl font-semibold text-white">Primary use cases</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-slate-300">
+      <section className="mt-8 max-w-4xl rounded-2xl border border-slate-300 bg-slate-100 p-6">
+        <h2 className="text-xl font-semibold text-slate-900">Primary use cases</h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-slate-600">
           {service.useCases.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
       </section>
 
-      <section className="mt-6 max-w-4xl rounded-2xl border border-white/10 bg-slate-900/60 p-6">
-        <h2 className="text-xl font-semibold text-white">How teams use this in SongCraft</h2>
-        <p className="mt-3 text-sm leading-7 text-slate-300">
+      <section className="mt-6 max-w-4xl rounded-2xl border border-slate-300 bg-slate-100 p-6">
+        <h2 className="text-xl font-semibold text-slate-900">How teams use this in Songify</h2>
+        <p className="mt-3 text-sm leading-7 text-slate-600">
           Start in Studio to set prompt direction, output style, and duration. Then generate and iterate until you
           reach the desired tone. Authenticated users can save final outputs to the SongCraft library and reuse
           successful settings across projects.
         </p>
       </section>
 
-      <section className="mt-6 max-w-4xl rounded-2xl border border-white/10 bg-slate-900/60 p-6">
-        <h2 className="text-xl font-semibold text-white">Common questions</h2>
+      <section className="mt-6 max-w-4xl rounded-2xl border border-slate-300 bg-slate-100 p-6">
+        <h2 className="text-xl font-semibold text-slate-900">Common questions</h2>
         <div className="mt-4 space-y-4">
           {service.faqItems.map((item) => (
-            <article key={item.question} className="rounded-xl border border-white/10 bg-slate-950/60 p-4">
-              <h3 className="text-base font-semibold text-white">{item.question}</h3>
-              <p className="mt-2 text-sm leading-7 text-slate-300">{item.answer}</p>
+            <article key={item.question} className="rounded-xl border border-slate-300 bg-white p-4">
+              <h3 className="text-base font-semibold text-slate-900">{item.question}</h3>
+              <p className="mt-2 text-sm leading-7 text-slate-600">{item.answer}</p>
             </article>
           ))}
         </div>

@@ -22,7 +22,7 @@ const VOCAL_STYLES = [
   "operatic, theatrical",
 ];
 
-const GUEST_LIMIT_KEY = "songcraft_guest_generation_count";
+const GUEST_LIMIT_KEY = "songify_guest_generation_count";
 
 function randomInt() {
   return Math.floor(Math.random() * 999_999_999);
@@ -154,10 +154,10 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
 
   return (
     <section className="space-y-6 pb-12">
-      <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-6 sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-300/90">AI Studio</p>
-        <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">Create polished songs in seconds</h1>
-        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
+      <div className="rounded-3xl border border-slate-300 bg-slate-100 p-6 sm:p-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-600">AI Studio</p>
+        <h1 className="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">Create polished songs in seconds</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-700">
           Anyone can open studio and generate one song. To generate unlimited songs, download, and manage history,
           users must login/register.
         </p>
@@ -171,8 +171,8 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
       <div className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
         <div className="space-y-6">
           <article className="surface-card">
-            <h2 className="text-lg font-semibold text-white">Lyrics and core style</h2>
-            <label className="mt-4 block text-sm text-slate-300">Base prompt</label>
+            <h2 className="text-lg font-semibold text-slate-900">Lyrics and core style</h2>
+            <label className="mt-4 block text-sm text-slate-700">Base prompt</label>
             <textarea
               className="input-area mt-2"
               rows={3}
@@ -180,7 +180,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
               onChange={(event) => setForm((prev) => ({ ...prev, basePrompt: event.target.value }))}
             />
 
-            <label className="mt-4 block text-sm text-slate-300">Lyrics / story text</label>
+            <label className="mt-4 block text-sm text-slate-700">Lyrics / story text</label>
             <textarea
               className="input-area mt-2"
               rows={8}
@@ -208,10 +208,10 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
           </article>
 
           <article className="surface-card space-y-4">
-            <h2 className="text-lg font-semibold text-white">Creative controls</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Creative controls</h2>
 
             <div>
-              <p className="mb-2 text-sm text-slate-300">Genre</p>
+              <p className="mb-2 text-sm text-slate-700">Genre</p>
               <div className="flex flex-wrap gap-2">
                 {GENRES.map((genre) => (
                   <button
@@ -227,7 +227,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
             </div>
 
             <div>
-              <p className="mb-2 text-sm text-slate-300">Mood (up to two)</p>
+              <p className="mb-2 text-sm text-slate-700">Mood (up to two)</p>
               <div className="flex flex-wrap gap-2">
                 {MOODS.map((mood) => (
                   <button
@@ -243,7 +243,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
             </div>
 
             <div>
-              <p className="mb-2 text-sm text-slate-300">Scene</p>
+              <p className="mb-2 text-sm text-slate-700">Scene</p>
               <div className="flex flex-wrap gap-2">
                 {SCENES.map((scene) => (
                   <button
@@ -259,7 +259,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
             </div>
 
             <div>
-              <p className="mb-2 text-sm text-slate-300">Vocal type</p>
+              <p className="mb-2 text-sm text-slate-700">Vocal type</p>
               <div className="flex flex-wrap gap-2">
                 {VOCALS.map((vocal) => (
                   <button
@@ -276,7 +276,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
 
             {form.vocalType !== "Instrumental" ? (
               <div>
-                <p className="mb-2 text-sm text-slate-300">Vocal style</p>
+                <p className="mb-2 text-sm text-slate-700">Vocal style</p>
                 <div className="flex flex-wrap gap-2">
                   {VOCAL_STYLES.map((style) => (
                     <button
@@ -307,9 +307,9 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
 
         <aside className="space-y-6">
           <article className="surface-card space-y-3">
-            <h3 className="text-base font-semibold text-white">Song settings</h3>
+            <h3 className="text-base font-semibold text-slate-900">Song settings</h3>
 
-            <label className="block text-sm text-slate-300">
+            <label className="block text-sm text-slate-700">
               Language
               <select
                 className="input mt-1"
@@ -324,7 +324,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
               </select>
             </label>
 
-            <label className="block text-sm text-slate-300">
+            <label className="block text-sm text-slate-700">
               Accent
               <select
                 className="input mt-1"
@@ -338,7 +338,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
               </select>
             </label>
 
-            <label className="block text-sm text-slate-300">
+            <label className="block text-sm text-slate-700">
               BPM
               <input
                 className="input mt-1"
@@ -350,7 +350,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
               />
             </label>
 
-            <label className="block text-sm text-slate-300">
+            <label className="block text-sm text-slate-700">
               Length (seconds)
               <input
                 className="input mt-1"
@@ -362,7 +362,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
               />
             </label>
 
-            <label className="block text-sm text-slate-300">
+            <label className="block text-sm text-slate-700">
               Key
               <select
                 className="input mt-1"
@@ -379,7 +379,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
               </select>
             </label>
 
-            <label className="block text-sm text-slate-300">
+            <label className="block text-sm text-slate-700">
               Structure
               <select
                 className="input mt-1"
@@ -393,7 +393,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
               </select>
             </label>
 
-            <label className="block text-sm text-slate-300">
+            <label className="block text-sm text-slate-700">
               Energy: {form.energy}
               <input
                 className="mt-2 w-full accent-teal-400"
@@ -405,7 +405,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
               />
             </label>
 
-            <label className="block text-sm text-slate-300">
+            <label className="block text-sm text-slate-700">
               Complexity: {form.complexity}
               <input
                 className="mt-2 w-full accent-teal-400"
@@ -417,8 +417,8 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
               />
             </label>
 
-            <div className="rounded-xl border border-white/10 bg-slate-950/70 p-3 text-xs text-slate-300">
-              <p className="font-medium text-teal-200">Tag preview</p>
+            <div className="rounded-xl border border-slate-300 bg-white p-3 text-xs text-slate-700">
+              <p className="font-medium text-teal-600">Tag preview</p>
               <p className="mt-2 leading-5">{tagPreview}</p>
             </div>
 
@@ -437,11 +437,11 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
           </article>
 
           <article className="surface-card space-y-3">
-            <h3 className="text-base font-semibold text-white">Latest result</h3>
+            <h3 className="text-base font-semibold text-slate-900">Latest result</h3>
             {result ? (
               <>
                 <audio className="w-full" controls src={result.audioUrl} />
-                <p className="text-xs text-slate-300">Prompt ID: {result.promptId}</p>
+                <p className="text-xs text-slate-600">Prompt ID: {result.promptId}</p>
 
                 <div className="flex gap-2">
                   {isAuthenticated ? (
@@ -456,7 +456,7 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
                     <button
                       type="button"
                       onClick={() => requireAuthAction("download")}
-                      className="flex-1 rounded-xl border border-white/20 px-3 py-2 text-sm font-semibold text-white"
+                      className="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-900"
                     >
                       Login to download
                     </button>
@@ -464,14 +464,14 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
 
                   <Link
                     href={isAuthenticated ? "/library" : "/login?next=/library"}
-                    className="flex-1 rounded-xl border border-white/20 px-3 py-2 text-center text-sm font-semibold text-white"
+                    className="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-center text-sm font-semibold text-slate-900"
                   >
                     {isAuthenticated ? "Open library" : "Login for library"}
                   </Link>
                 </div>
               </>
             ) : (
-              <p className="text-sm text-slate-300">Your generated audio preview appears here.</p>
+              <p className="text-sm text-slate-600">Your generated audio preview appears here.</p>
             )}
           </article>
         </aside>

@@ -22,7 +22,7 @@ export function buildServiceListSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "SongCraft AI Audio Services",
+    name: "Songify AI Audio Services",
     itemListElement: [
       { "@type": "ListItem", position: 1, url: absoluteUrl("/services/text-to-speech"), name: "Text to Speech" },
       {
