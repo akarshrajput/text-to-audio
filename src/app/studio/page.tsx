@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { StudioClient } from "@/components/studio/studio-client";
 import type { Metadata } from "next";
 import { getComfyUiOnline } from "@/lib/app-store";
@@ -33,7 +34,14 @@ export default async function StudioPage() {
           </div>
         </div>
       )}
-      <StudioClient isAuthenticated={Boolean(user)} />
+      <Suspense fallback={
+        <div style={{ padding: "4rem", textAlign: "center", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+          Loading studio…
+        </div>
+      }>
+        <StudioClient isAuthenticated={Boolean(user)} />
+      </Suspense>
     </main>
   );
 }
+

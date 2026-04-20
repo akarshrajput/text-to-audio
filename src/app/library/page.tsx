@@ -2,6 +2,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
+import { LibrarySongCard } from "@/components/ui/library-song-card";
 
 export const metadata: Metadata = buildMetadata({
   title: "Audio Library",
@@ -73,29 +74,12 @@ export default async function LibraryPage() {
         </div>
       )}
 
-      <section style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}>
-        {songs.map((song) => (
-          <article key={song.id} className="glass-card" style={{ padding: "1.25rem" }}>
-            <h2 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginBottom: "0.4rem" }}>
-              {song.title ?? "Untitled song"}
-            </h2>
-            <p style={{ fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--accent-teal)", marginBottom: "0.75rem" }}>
-              {(song.genre ?? "custom")} / {(song.mood ?? "original")}
-            </p>
-            {song.prompt_tags && (
-              <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: 1.6, marginBottom: "0.75rem", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                {song.prompt_tags}
-              </p>
-            )}
-            {song.audio_url && (
-              <audio className="mt-3 w-full" controls src={song.audio_url} preload="none" />
-            )}
-            <p style={{ marginTop: "0.75rem", fontSize: "0.7rem", color: "var(--text-muted)" }}>
-              {new Date(song.created_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-            </p>
-          </article>
+      <section style={{ display: "grid", gap: "1.25rem", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}>
+        {songs.map((song, i) => (
+          <LibrarySongCard key={song.id} song={song} index={i} />
         ))}
       </section>
     </main>
   );
 }
+

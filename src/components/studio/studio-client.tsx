@@ -1,17 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useRef, useEffect, useState } from "react";
 import clsx from "clsx";
 import type { SongGenerateInput, SongGenerateResult } from "@/lib/song/types";
+import { WavePlayer } from "@/components/ui/wave-player";
 
 // ─── Constants ────────────────────────────────────────────
 const DEFAULT_PROMPT =
   "warm children song, acoustic instruments, gentle storytelling melody, family-safe content, clean vocal pronunciation";
 
 const GENRES = ["Lullaby", "Pop", "Folk", "Orchestral", "Jazz", "Techno", "Lo-fi", "Rock", "Ambient", "Reggae"];
-const MOODS  = ["happy", "calm", "playful", "mysterious", "epic", "cute", "sad", "energetic", "spooky", "dreamy"];
+const MOODS = ["happy", "calm", "playful", "mysterious", "epic", "cute", "sad", "energetic", "spooky", "dreamy"];
 const SCENES = ["Forest", "Space", "Ocean", "Castle", "City", "Classroom", "Playground", "Nighttime", "Farm", "Jungle"];
 const VOCALS = ["Female vocal", "Male vocal", "Child voice", "Choir", "Rap", "Instrumental"];
 const VOCAL_STYLES = [
@@ -283,9 +284,10 @@ function RangeField({
 // ─── Main component ─────────────────────────────────────────
 export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [form, setForm] = useState<SongGenerateInput>({
     basePrompt: DEFAULT_PROMPT,
-    lyrics: "",
+    lyrics: searchParams.get("lyrics") ?? "",
     lyricsMode: "use",
     genre: null,
     moods: [],
@@ -305,6 +307,13 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
     kidSafe: true,
     timeSignature: "4",
   });
+
+  // Sync ?lyrics param changes (e.g. back-nav) into the form
+  useEffect(() => {
+    const fromUrl = searchParams.get("lyrics");
+    if (fromUrl) setForm((p) => ({ ...p, lyrics: fromUrl }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -706,50 +715,34 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
             </h3>
 
             {result ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                <audio style={{ width: "100%", borderRadius: "0.5rem" }} controls src={result.audioUrl} />
-                <p style={{ fontSize: "0.67rem", color: "var(--text-muted)", fontFamily: "monospace", wordBreak: "break-all" }}>
-                  {result.promptId}
-                </p>
-                <div style={{ display: "flex", gap: "0.5rem" }}>
-                  {isAuthenticated ? (
-                    <a
-                      href={result.persistedAudioUrl ?? result.audioUrl}
-                      download
-                      style={{
-                        flex: 1, textAlign: "center", textDecoration: "none",
-                        fontSize: "0.8rem", fontWeight: 600,
-                        padding: "0.5rem 0.5rem",
-                        borderRadius: "0.5rem",
-                        border: "1px solid rgba(45,212,191,0.3)",
-                        background: "rgba(45,212,191,0.08)",
-                        color: "#2dd4bf",
-                        transition: "all 150ms",
-                      }}
-                    >
-                      ⬇ Download
-                    </a>
-                  ) : (
-                    <button type="button" onClick={() => requireAuthAction("download")} style={{ flex: 1, fontSize: "0.8rem", fontWeight: 600, padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)", color: "var(--text-secondary)", cursor: "pointer" }}>
-                      Login to download
-                    </button>
-                  )}
-                  <Link
-                    href={isAuthenticated ? "/library" : "/login?next=/library"}
-                    style={{
-                      flex: 1, textAlign: "center", textDecoration: "none",
-                      fontSize: "0.8rem", fontWeight: 600,
-                      padding: "0.5rem",
-                      borderRadius: "0.5rem",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      background: "rgba(255,255,255,0.04)",
-                      color: "var(--text-secondary)",
-                    }}
-                  >
-                    {isAuthenticated ? "Library" : "Login"}
-                  </Link>
-                </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+
+                {/* WaveSurfer player */}
+                <WavePlayer
+                  key={result.audioUrl}
+                  src={result.audioUrl}
+                  title={form.genre ?? "AI Song"}
+                  artist="Songify Studio"
+                  genre={form.genre ?? undefined}
+                  accent="#6366f1"
+                />
+
+
+
+                {/* View Library */}
+                <Link
+                  href={isAuthenticated ? "/library" : "/login?next=/library"}
+                  style={{
+                    display: "block", textAlign: "center", textDecoration: "none",
+                    fontSize: "0.8rem", fontWeight: 600, padding: "0.5rem",
+                    borderRadius: "0.5rem", border: "1px solid rgba(255,255,255,0.08)",
+                    background: "rgba(255,255,255,0.03)", color: "var(--text-muted)",
+                  }}
+                >
+                  {isAuthenticated ? "View Library →" : "Login to save"}
+                </Link>
               </div>
+
             ) : (
               <div style={{ padding: "1.5rem 0", textAlign: "center" }}>
                 <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.15)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 0.6rem" }}>
