@@ -206,6 +206,21 @@ function SettingRow({ label, children }: { label: string; children: React.ReactN
   );
 }
 
+// ─── Card wrapper ─────────────────────────────────────────
+function Card({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  return (
+    <div style={{
+      background: "rgba(13,17,23,0.8)",
+      border: "1px solid rgba(255,255,255,0.07)",
+      borderRadius: "0.875rem",
+      backdropFilter: "blur(16px)",
+      ...style,
+    }}>
+      {children}
+    </div>
+  );
+}
+
 // ─── Chip ──────────────────────────────────────────────────
 function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -356,19 +371,6 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
   function requireAuthAction(target: "download" | "library") {
     router.push(`/login?next=/studio&intent=${target}`);
   }
-
-  // ── Card wrapper
-  const Card = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
-    <div style={{
-      background: "rgba(13,17,23,0.8)",
-      border: "1px solid rgba(255,255,255,0.07)",
-      borderRadius: "0.875rem",
-      backdropFilter: "blur(16px)",
-      ...style,
-    }}>
-      {children}
-    </div>
-  );
 
   return (
     <section style={{ paddingBottom: "4rem" }}>
