@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
 export const siteConfig = {
-  name: "SongCraft",
-  shortName: "SongCraft",
+  name: "Songify",
+  shortName: "Songify",
   description:
-    "SongCraft is an AI audio platform for text to speech, tone-based speech, poem to audio, and AI music generation without artists.",
+    "Songify is an AI audio platform for text to speech, tone-based speech, poem to audio, and AI music generation without artists.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "en_US",
-  twitterHandle: "@songcraft",
+  twitterHandle: "@songify",
   keywords: [
     "text to audio",
     "text to speech",
