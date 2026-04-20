@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useEffect, useState } from "react";
 import clsx from "clsx";
 import type { SongGenerateInput, SongGenerateResult } from "@/lib/song/types";
 
+// ─── Constants ────────────────────────────────────────────
 const DEFAULT_PROMPT =
   "warm children song, acoustic instruments, gentle storytelling melody, family-safe content, clean vocal pronunciation";
 
 const GENRES = ["Lullaby", "Pop", "Folk", "Orchestral", "Jazz", "Techno", "Lo-fi", "Rock", "Ambient", "Reggae"];
-const MOODS = ["happy", "calm", "playful", "mysterious", "epic", "cute", "sad", "energetic", "spooky", "dreamy"];
+const MOODS  = ["happy", "calm", "playful", "mysterious", "epic", "cute", "sad", "energetic", "spooky", "dreamy"];
 const SCENES = ["Forest", "Space", "Ocean", "Castle", "City", "Classroom", "Playground", "Nighttime", "Farm", "Jungle"];
 const VOCALS = ["Female vocal", "Male vocal", "Child voice", "Choir", "Rap", "Instrumental"];
 const VOCAL_STYLES = [
@@ -22,28 +23,249 @@ const VOCAL_STYLES = [
   "operatic, theatrical",
 ];
 
+const KEYS = ["C major", "G major", "D major", "A major", "F major", "A minor", "E minor"];
+const STRUCTURES = ["Verse+Chorus", "Loop", "Story Arc", "Build-up"];
+const LANGUAGES = [
+  { value: "en", label: "English" },
+  { value: "de", label: "German" },
+  { value: "hi", label: "Hindi" },
+  { value: "es", label: "Spanish" },
+  { value: "fr", label: "French" },
+];
+const ACCENTS = [
+  { value: "US", label: "US" },
+  { value: "UK", label: "UK" },
+  { value: "Indian", label: "Indian" },
+  { value: "Neutral", label: "Neutral" },
+];
+
 const GUEST_LIMIT_KEY = "songify_guest_generation_count";
-
-function randomInt() {
-  return Math.floor(Math.random() * 999_999_999);
-}
-
+function randomInt() { return Math.floor(Math.random() * 999_999_999); }
 function readGuestCount() {
-  if (typeof window === "undefined") {
-    return 0;
-  }
-  const count = Number(window.localStorage.getItem(GUEST_LIMIT_KEY) ?? "0");
-  return Number.isFinite(count) ? count : 0;
+  if (typeof window === "undefined") return 0;
+  const c = Number(window.localStorage.getItem(GUEST_LIMIT_KEY) ?? "0");
+  return Number.isFinite(c) ? c : 0;
 }
-
 function incrementGuestCount() {
-  if (typeof window === "undefined") {
-    return;
-  }
-  const count = readGuestCount() + 1;
-  window.localStorage.setItem(GUEST_LIMIT_KEY, String(count));
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(GUEST_LIMIT_KEY, String(readGuestCount() + 1));
 }
 
+// ─── Custom Select ─────────────────────────────────────────
+function CustomSelect({
+  value,
+  options,
+  onChange,
+}: {
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const selected = options.find((o) => o.value === value) ?? options[0];
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} style={{ position: "relative", userSelect: "none" }}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0.45rem 0.75rem",
+          borderRadius: "0.5rem",
+          border: open ? "1px solid rgba(99,102,241,0.6)" : "1px solid rgba(255,255,255,0.1)",
+          background: "rgba(255,255,255,0.04)",
+          color: "var(--text-primary)",
+          fontSize: "0.83rem",
+          fontWeight: 500,
+          cursor: "pointer",
+          outline: "none",
+          transition: "border-color 150ms",
+          boxShadow: open ? "0 0 0 3px rgba(99,102,241,0.12)" : "none",
+        }}
+      >
+        <span>{selected.label}</span>
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          style={{ opacity: 0.5, flexShrink: 0, transform: open ? "rotate(180deg)" : "none", transition: "transform 150ms" }}
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+
+      {open && (
+        <div style={{
+          position: "absolute",
+          top: "calc(100% + 4px)",
+          left: 0,
+          right: 0,
+          background: "#111827",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: "0.6rem",
+          overflow: "hidden",
+          zIndex: 50,
+          boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
+        }}>
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { onChange(opt.value); setOpen(false); }}
+              style={{
+                width: "100%",
+                textAlign: "left",
+                padding: "0.5rem 0.75rem",
+                fontSize: "0.83rem",
+                color: opt.value === value ? "#a5b4fc" : "var(--text-secondary)",
+                background: opt.value === value ? "rgba(99,102,241,0.12)" : "transparent",
+                border: "none",
+                cursor: "pointer",
+                transition: "background 120ms",
+                fontWeight: opt.value === value ? 600 : 400,
+              }}
+              onMouseEnter={(e) => { if (opt.value !== value) (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.05)"; }}
+              onMouseLeave={(e) => { if (opt.value !== value) (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Custom Number Input ────────────────────────────────────
+function NumberInput({
+  value,
+  min,
+  max,
+  onChange,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "0.5rem", overflow: "hidden", background: "rgba(255,255,255,0.04)" }}>
+      <button
+        type="button"
+        onClick={() => onChange(Math.max(min, value - 1))}
+        style={{ width: 32, height: 32, border: "none", background: "transparent", color: "var(--text-secondary)", cursor: "pointer", fontSize: "1rem", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        −
+      </button>
+      <span style={{ flex: 1, textAlign: "center", fontSize: "0.83rem", fontWeight: 600, color: "var(--text-primary)" }}>{value}</span>
+      <button
+        type="button"
+        onClick={() => onChange(Math.min(max, value + 1))}
+        style={{ width: 32, height: 32, border: "none", background: "transparent", color: "var(--text-secondary)", cursor: "pointer", fontSize: "1rem", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        +
+      </button>
+    </div>
+  );
+}
+
+// ─── Chip group label ──────────────────────────────────────
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "0.55rem" }}>
+      {children}
+    </p>
+  );
+}
+
+// ─── Setting row ───────────────────────────────────────────
+function SettingRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "0.4rem" }}>
+        {label}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+// ─── Chip ──────────────────────────────────────────────────
+function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        padding: "0.25rem 0.65rem",
+        borderRadius: "0.4rem",
+        fontSize: "0.78rem",
+        fontWeight: 500,
+        cursor: "pointer",
+        border: active ? "1px solid rgba(99,102,241,0.6)" : "1px solid rgba(255,255,255,0.08)",
+        background: active ? "rgba(99,102,241,0.18)" : "rgba(255,255,255,0.03)",
+        color: active ? "#a5b4fc" : "var(--text-secondary)",
+        transition: "all 130ms ease",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ─── Range slider ──────────────────────────────────────────
+function RangeField({
+  label,
+  value,
+  min,
+  max,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  onChange: (v: number) => void;
+}) {
+  const pct = ((value - min) / (max - min)) * 100;
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.35rem" }}>
+        <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)" }}>{label}</p>
+        <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#a5b4fc" }}>{value}</span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        style={{ width: "100%", accentColor: "#6366f1", cursor: "pointer" }}
+      />
+    </div>
+  );
+}
+
+// ─── Main component ─────────────────────────────────────────
 export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) {
   const router = useRouter();
   const [form, setForm] = useState<SongGenerateInput>({
@@ -83,399 +305,472 @@ export function StudioClient({ isAuthenticated }: { isAuthenticated: boolean }) 
       form.vocalStyles.join(", "),
       form.structure,
       form.kidSafe ? "kid-safe" : "standard",
-    ]
-      .filter(Boolean)
-      .join(" | ");
+    ].filter(Boolean).join(" | ");
   }, [form]);
 
   async function onGenerate() {
     setError(null);
-
     if (!isAuthenticated && readGuestCount() >= 1) {
-      setError("Guest users can generate only one song. Login/register to continue.");
+      setError("Guest users can generate only one song. Login or register to continue.");
       return;
     }
-
     setIsGenerating(true);
     try {
-      const payload: SongGenerateInput = {
-        ...form,
-        seed: form.vibeLock ? form.seed : randomInt(),
-      };
-
+      const payload: SongGenerateInput = { ...form, seed: form.vibeLock ? form.seed : randomInt() };
       const response = await fetch("/api/songs/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
       const data = (await response.json()) as SongGenerateResult | { error: string };
-
-      if (!response.ok) {
-        const message = "error" in data ? data.error : "Song generation failed";
-        throw new Error(message);
-      }
-
+      if (!response.ok) throw new Error("error" in data ? data.error : "Generation failed");
       const songData = data as SongGenerateResult;
       setResult(songData);
-      setForm((prev) => ({ ...prev, seed: songData.seed }));
-
-      if (!isAuthenticated) {
-        incrementGuestCount();
-      } else {
-        router.refresh();
-      }
+      setForm((p) => ({ ...p, seed: songData.seed }));
+      if (!isAuthenticated) incrementGuestCount();
+      else router.refresh();
     } catch (cause) {
-      const message = cause instanceof Error ? cause.message : "Unexpected error while generating song";
-      setError(message);
+      setError(cause instanceof Error ? cause.message : "Unexpected error");
     } finally {
       setIsGenerating(false);
     }
   }
 
   function toggleMood(mood: string) {
-    setForm((prev) => {
-      const exists = prev.moods.includes(mood);
-      if (exists) {
-        return { ...prev, moods: prev.moods.filter((item) => item !== mood) };
-      }
-
-      if (prev.moods.length >= 2) {
-        return { ...prev, moods: [prev.moods[1], mood] };
-      }
-
-      return { ...prev, moods: [...prev.moods, mood] };
+    setForm((p) => {
+      if (p.moods.includes(mood)) return { ...p, moods: p.moods.filter((m) => m !== mood) };
+      if (p.moods.length >= 2) return { ...p, moods: [p.moods[1], mood] };
+      return { ...p, moods: [...p.moods, mood] };
     });
+  }
+
+  function toggleVocalStyle(style: string) {
+    setForm((p) => ({
+      ...p,
+      vocalStyles: p.vocalStyles.includes(style)
+        ? p.vocalStyles.filter((s) => s !== style)
+        : [...p.vocalStyles, style],
+    }));
   }
 
   function requireAuthAction(target: "download" | "library") {
     router.push(`/login?next=/studio&intent=${target}`);
   }
 
+  // ── Card wrapper
+  const Card = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
+    <div style={{
+      background: "rgba(13,17,23,0.8)",
+      border: "1px solid rgba(255,255,255,0.07)",
+      borderRadius: "0.875rem",
+      backdropFilter: "blur(16px)",
+      ...style,
+    }}>
+      {children}
+    </div>
+  );
+
   return (
-    <section className="space-y-6 pb-12">
-      <div className="rounded-3xl border border-slate-300 bg-slate-100 p-6 sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-600">AI Studio</p>
-        <h1 className="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">Create polished songs in seconds</h1>
-        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-700">
-          Anyone can open studio and generate one song. To generate unlimited songs, download, and manage history,
-          users must login/register.
-        </p>
-        {!isAuthenticated ? (
-          <p className="mt-4 rounded-xl border border-amber-300/35 bg-amber-950/30 px-3 py-2 text-sm text-amber-200">
-            Guest mode: one generation allowed. After that, authentication is required.
-          </p>
-        ) : null}
+    <section style={{ paddingBottom: "4rem" }}>
+
+      {/* ── Studio header ───────────────────────────────── */}
+      <div style={{
+        marginBottom: "1.25rem",
+        padding: "1.25rem 1.5rem",
+        borderRadius: "0.875rem",
+        background: "linear-gradient(135deg, rgba(99,102,241,0.14) 0%, rgba(45,212,191,0.07) 100%)",
+        border: "1px solid rgba(99,102,241,0.2)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: "1rem",
+      }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.3rem" }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 6px #22c55e" }} />
+            <span style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#a5b4fc" }}>AI Studio</span>
+          </div>
+          <h1 style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: "1.4rem", fontWeight: 700, color: "var(--text-primary)" }}>
+            Create polished songs in seconds
+          </h1>
+        </div>
+        {!isAuthenticated && (
+          <div style={{ fontSize: "0.8rem", color: "#fbbf24", background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: "0.5rem", padding: "0.45rem 0.85rem" }}>
+            ⚡ Guest mode ·{" "}
+            <Link href="/login?next=/studio" style={{ color: "#fbbf24", fontWeight: 700, textDecoration: "underline" }}>
+              Login to unlock
+            </Link>
+          </div>
+        )}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
-        <div className="space-y-6">
-          <article className="surface-card">
-            <h2 className="text-lg font-semibold text-slate-900">Lyrics and core style</h2>
-            <label className="mt-4 block text-sm text-slate-700">Base prompt</label>
+      {/* ── Two-column layout ──────────────────────────── */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 300px",
+        gap: "1rem",
+        alignItems: "start",
+      }}>
+
+        {/* ── LEFT COLUMN ─────────────────────────── */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem", minWidth: 0 }}>
+
+          {/* Lyrics panel */}
+          <Card style={{ padding: "1.25rem" }}>
+            <h2 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-primary)", marginBottom: "1rem", letterSpacing: "-0.01em" }}>
+              📝 Lyrics &amp; Core Style
+            </h2>
+
+            <FieldLabel>Base Prompt</FieldLabel>
             <textarea
-              className="input-area mt-2"
-              rows={3}
+              rows={2}
               value={form.basePrompt}
-              onChange={(event) => setForm((prev) => ({ ...prev, basePrompt: event.target.value }))}
+              onChange={(e) => setForm((p) => ({ ...p, basePrompt: e.target.value }))}
+              style={{
+                width: "100%",
+                borderRadius: "0.5rem",
+                border: "1px solid rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.03)",
+                color: "var(--text-primary)",
+                padding: "0.5rem 0.7rem",
+                fontSize: "0.83rem",
+                lineHeight: 1.6,
+                resize: "vertical",
+                outline: "none",
+                fontFamily: "inherit",
+                marginBottom: "0.85rem",
+              }}
             />
 
-            <label className="mt-4 block text-sm text-slate-700">Lyrics / story text</label>
+            <FieldLabel>Lyrics / Story Text</FieldLabel>
             <textarea
-              className="input-area mt-2"
-              rows={8}
-              placeholder="Paste your story, poem, or lyrics"
+              rows={5}
+              placeholder="Paste your story, poem, or lyrics here…"
               value={form.lyrics}
-              onChange={(event) => setForm((prev) => ({ ...prev, lyrics: event.target.value }))}
+              onChange={(e) => setForm((p) => ({ ...p, lyrics: e.target.value }))}
+              style={{
+                width: "100%",
+                borderRadius: "0.5rem",
+                border: "1px solid rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.03)",
+                color: "var(--text-primary)",
+                padding: "0.5rem 0.7rem",
+                fontSize: "0.83rem",
+                lineHeight: 1.6,
+                resize: "vertical",
+                outline: "none",
+                fontFamily: "inherit",
+                marginBottom: "0.85rem",
+              }}
             />
 
-            <div className="mt-4 flex flex-wrap gap-2">
+            <FieldLabel>Mode</FieldLabel>
+            <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
               {[
                 { key: "use", label: "Use as lyrics" },
-                { key: "story", label: "Story to song" },
+                { key: "story", label: "Story → Song" },
                 { key: "instrumental", label: "Instrumental" },
               ].map((item) => (
-                <button
+                <Chip
                   key={item.key}
-                  type="button"
-                  className={clsx("chip", form.lyricsMode === item.key && "chip-active")}
-                  onClick={() => setForm((prev) => ({ ...prev, lyricsMode: item.key as SongGenerateInput["lyricsMode"] }))}
+                  active={form.lyricsMode === item.key}
+                  onClick={() => setForm((p) => ({ ...p, lyricsMode: item.key as SongGenerateInput["lyricsMode"] }))}
                 >
                   {item.label}
-                </button>
+                </Chip>
               ))}
             </div>
-          </article>
+          </Card>
 
-          <article className="surface-card space-y-4">
-            <h2 className="text-lg font-semibold text-slate-900">Creative controls</h2>
+          {/* Creative controls panel */}
+          <Card style={{ padding: "1.25rem" }}>
+            <h2 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-primary)", marginBottom: "1rem", letterSpacing: "-0.01em" }}>
+              🎛️ Creative Controls
+            </h2>
 
-            <div>
-              <p className="mb-2 text-sm text-slate-700">Genre</p>
-              <div className="flex flex-wrap gap-2">
-                {GENRES.map((genre) => (
-                  <button
-                    key={genre}
-                    type="button"
-                    className={clsx("chip", form.genre === genre && "chip-active")}
-                    onClick={() => setForm((prev) => ({ ...prev, genre: prev.genre === genre ? null : genre }))}
-                  >
-                    {genre}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
 
-            <div>
-              <p className="mb-2 text-sm text-slate-700">Mood (up to two)</p>
-              <div className="flex flex-wrap gap-2">
-                {MOODS.map((mood) => (
-                  <button
-                    key={mood}
-                    type="button"
-                    className={clsx("chip", form.moods.includes(mood) && "chip-active")}
-                    onClick={() => toggleMood(mood)}
-                  >
-                    {mood}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="mb-2 text-sm text-slate-700">Scene</p>
-              <div className="flex flex-wrap gap-2">
-                {SCENES.map((scene) => (
-                  <button
-                    key={scene}
-                    type="button"
-                    className={clsx("chip", form.scene === scene && "chip-active")}
-                    onClick={() => setForm((prev) => ({ ...prev, scene: prev.scene === scene ? null : scene }))}
-                  >
-                    {scene}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="mb-2 text-sm text-slate-700">Vocal type</p>
-              <div className="flex flex-wrap gap-2">
-                {VOCALS.map((vocal) => (
-                  <button
-                    key={vocal}
-                    type="button"
-                    className={clsx("chip", form.vocalType === vocal && "chip-active")}
-                    onClick={() => setForm((prev) => ({ ...prev, vocalType: vocal }))}
-                  >
-                    {vocal}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {form.vocalType !== "Instrumental" ? (
+              {/* Genre */}
               <div>
-                <p className="mb-2 text-sm text-slate-700">Vocal style</p>
-                <div className="flex flex-wrap gap-2">
-                  {VOCAL_STYLES.map((style) => (
-                    <button
-                      key={style}
-                      type="button"
-                      className={clsx("chip", form.vocalStyles.includes(style) && "chip-active")}
-                      onClick={() => {
-                        setForm((prev) => {
-                          const exists = prev.vocalStyles.includes(style);
-                          if (exists) {
-                            return {
-                              ...prev,
-                              vocalStyles: prev.vocalStyles.filter((item) => item !== style),
-                            };
-                          }
-                          return { ...prev, vocalStyles: [...prev.vocalStyles, style] };
-                        });
-                      }}
-                    >
-                      {style}
-                    </button>
+                <FieldLabel>Genre</FieldLabel>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                  {GENRES.map((g) => (
+                    <Chip key={g} active={form.genre === g} onClick={() => setForm((p) => ({ ...p, genre: p.genre === g ? null : g }))}>
+                      {g}
+                    </Chip>
                   ))}
                 </div>
               </div>
-            ) : null}
-          </article>
+
+              {/* Grid row: Mood + Scene */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div>
+                  <FieldLabel>Mood (max 2)</FieldLabel>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                    {MOODS.map((m) => (
+                      <Chip key={m} active={form.moods.includes(m)} onClick={() => toggleMood(m)}>{m}</Chip>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <FieldLabel>Scene</FieldLabel>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                    {SCENES.map((s) => (
+                      <Chip key={s} active={form.scene === s} onClick={() => setForm((p) => ({ ...p, scene: p.scene === s ? null : s }))}>
+                        {s}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Vocal type */}
+              <div>
+                <FieldLabel>Vocal Type</FieldLabel>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                  {VOCALS.map((v) => (
+                    <Chip key={v} active={form.vocalType === v} onClick={() => setForm((p) => ({ ...p, vocalType: v }))}>{v}</Chip>
+                  ))}
+                </div>
+              </div>
+
+              {/* Vocal style */}
+              {form.vocalType !== "Instrumental" && (
+                <div>
+                  <FieldLabel>Vocal Style</FieldLabel>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                    {VOCAL_STYLES.map((s) => (
+                      <Chip key={s} active={form.vocalStyles.includes(s)} onClick={() => toggleVocalStyle(s)}>{s}</Chip>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </Card>
         </div>
 
-        <aside className="space-y-6">
-          <article className="surface-card space-y-3">
-            <h3 className="text-base font-semibold text-slate-900">Song settings</h3>
+        {/* ── RIGHT COLUMN — fixed 300px sidebar ──── */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem", minWidth: 0 }}>
 
-            <label className="block text-sm text-slate-700">
-              Language
-              <select
-                className="input mt-1"
-                value={form.language}
-                onChange={(event) => setForm((prev) => ({ ...prev, language: event.target.value }))}
-              >
-                <option value="en">English</option>
-                <option value="de">German</option>
-                <option value="hi">Hindi</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-              </select>
-            </label>
+          {/* Song settings */}
+          <Card style={{ padding: "1.25rem" }}>
+            <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-primary)", marginBottom: "1rem" }}>
+              ⚙️ Song Settings
+            </h3>
 
-            <label className="block text-sm text-slate-700">
-              Accent
-              <select
-                className="input mt-1"
-                value={form.accent}
-                onChange={(event) => setForm((prev) => ({ ...prev, accent: event.target.value }))}
-              >
-                <option value="US">US</option>
-                <option value="UK">UK</option>
-                <option value="Indian">Indian</option>
-                <option value="Neutral">Neutral</option>
-              </select>
-            </label>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
 
-            <label className="block text-sm text-slate-700">
-              BPM
-              <input
-                className="input mt-1"
-                type="number"
-                min={60}
-                max={180}
-                value={form.bpm}
-                onChange={(event) => setForm((prev) => ({ ...prev, bpm: Number(event.target.value) }))}
-              />
-            </label>
+              {/* Language */}
+              <SettingRow label="Language">
+                <CustomSelect
+                  value={form.language}
+                  options={LANGUAGES}
+                  onChange={(v) => setForm((p) => ({ ...p, language: v }))}
+                />
+              </SettingRow>
 
-            <label className="block text-sm text-slate-700">
-              Length (seconds)
-              <input
-                className="input mt-1"
-                type="number"
-                min={10}
-                max={180}
-                value={form.length}
-                onChange={(event) => setForm((prev) => ({ ...prev, length: Number(event.target.value) }))}
-              />
-            </label>
+              {/* Accent */}
+              <SettingRow label="Accent">
+                <CustomSelect
+                  value={form.accent}
+                  options={ACCENTS}
+                  onChange={(v) => setForm((p) => ({ ...p, accent: v }))}
+                />
+              </SettingRow>
 
-            <label className="block text-sm text-slate-700">
-              Key
-              <select
-                className="input mt-1"
-                value={form.keyScale}
-                onChange={(event) => setForm((prev) => ({ ...prev, keyScale: event.target.value }))}
-              >
-                <option>C major</option>
-                <option>G major</option>
-                <option>D major</option>
-                <option>A major</option>
-                <option>F major</option>
-                <option>A minor</option>
-                <option>E minor</option>
-              </select>
-            </label>
+              {/* BPM */}
+              <SettingRow label="BPM">
+                <NumberInput value={form.bpm} min={60} max={180} onChange={(v) => setForm((p) => ({ ...p, bpm: v }))} />
+              </SettingRow>
 
-            <label className="block text-sm text-slate-700">
-              Structure
-              <select
-                className="input mt-1"
-                value={form.structure}
-                onChange={(event) => setForm((prev) => ({ ...prev, structure: event.target.value }))}
-              >
-                <option>Verse+Chorus</option>
-                <option>Loop</option>
-                <option>Story Arc</option>
-                <option>Build-up</option>
-              </select>
-            </label>
+              {/* Length */}
+              <SettingRow label="Length (sec)">
+                <NumberInput value={form.length} min={10} max={180} onChange={(v) => setForm((p) => ({ ...p, length: v }))} />
+              </SettingRow>
 
-            <label className="block text-sm text-slate-700">
-              Energy: {form.energy}
-              <input
-                className="mt-2 w-full accent-teal-400"
-                type="range"
-                min={0}
-                max={100}
+              {/* Key */}
+              <SettingRow label="Key">
+                <CustomSelect
+                  value={form.keyScale}
+                  options={KEYS.map((k) => ({ value: k, label: k }))}
+                  onChange={(v) => setForm((p) => ({ ...p, keyScale: v }))}
+                />
+              </SettingRow>
+
+              {/* Structure */}
+              <SettingRow label="Structure">
+                <CustomSelect
+                  value={form.structure}
+                  options={STRUCTURES.map((s) => ({ value: s, label: s }))}
+                  onChange={(v) => setForm((p) => ({ ...p, structure: v }))}
+                />
+              </SettingRow>
+
+              {/* Energy */}
+              <RangeField
+                label="Energy"
                 value={form.energy}
-                onChange={(event) => setForm((prev) => ({ ...prev, energy: Number(event.target.value) }))}
-              />
-            </label>
-
-            <label className="block text-sm text-slate-700">
-              Complexity: {form.complexity}
-              <input
-                className="mt-2 w-full accent-teal-400"
-                type="range"
                 min={0}
                 max={100}
-                value={form.complexity}
-                onChange={(event) => setForm((prev) => ({ ...prev, complexity: Number(event.target.value) }))}
+                onChange={(v) => setForm((p) => ({ ...p, energy: v }))}
               />
-            </label>
 
-            <div className="rounded-xl border border-slate-300 bg-white p-3 text-xs text-slate-700">
-              <p className="font-medium text-teal-600">Tag preview</p>
-              <p className="mt-2 leading-5">{tagPreview}</p>
+              {/* Complexity */}
+              <RangeField
+                label="Complexity"
+                value={form.complexity}
+                min={0}
+                max={100}
+                onChange={(v) => setForm((p) => ({ ...p, complexity: v }))}
+              />
+
+              {/* Tag preview */}
+              <div>
+                <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "0.4rem" }}>
+                  Tag Preview
+                </p>
+                <div style={{
+                  fontSize: "0.7rem",
+                  lineHeight: 1.6,
+                  color: "var(--text-muted)",
+                  fontFamily: "monospace",
+                  background: "rgba(0,0,0,0.35)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: "0.4rem",
+                  padding: "0.5rem 0.65rem",
+                  wordBreak: "break-word",
+                }}>
+                  {tagPreview}
+                </div>
+              </div>
+
+              {/* Generate button */}
+              <button
+                type="button"
+                disabled={isGenerating}
+                onClick={onGenerate}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.5rem",
+                  width: "100%",
+                  padding: "0.7rem",
+                  borderRadius: "0.6rem",
+                  border: "none",
+                  background: isGenerating
+                    ? "rgba(99,102,241,0.4)"
+                    : "linear-gradient(135deg, #6366f1, #818cf8)",
+                  color: "#fff",
+                  fontSize: "0.88rem",
+                  fontWeight: 700,
+                  cursor: isGenerating ? "not-allowed" : "pointer",
+                  boxShadow: "0 0 20px rgba(99,102,241,0.3)",
+                  transition: "opacity 180ms, box-shadow 180ms",
+                }}
+              >
+                {isGenerating ? (
+                  <>
+                    <span style={{ display: "flex", gap: "3px" }}>
+                      {[0, 0.2, 0.4].map((d, i) => (
+                        <span key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: "#fff", animation: `pulse-dot 1.2s ${d}s ease-in-out infinite`, opacity: 0.8 }} />
+                      ))}
+                    </span>
+                    Generating…
+                  </>
+                ) : (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                    Create Song
+                  </>
+                )}
+              </button>
+
+              {error && (
+                <div style={{ fontSize: "0.78rem", color: "#fca5a5", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "0.4rem", padding: "0.5rem 0.65rem", lineHeight: 1.5 }}>
+                  {error}
+                </div>
+              )}
             </div>
+          </Card>
 
-            <button
-              type="button"
-              disabled={isGenerating}
-              onClick={onGenerate}
-              className="mt-2 w-full rounded-xl bg-gradient-to-r from-teal-400 to-cyan-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isGenerating ? "Generating..." : "Create song"}
-            </button>
+          {/* Result card */}
+          <Card style={{ padding: "1.25rem" }}>
+            <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-primary)", marginBottom: "0.85rem" }}>
+              🎧 Output
+            </h3>
 
-            {error ? (
-              <p className="rounded-xl border border-rose-400/40 bg-rose-950/40 px-3 py-2 text-xs text-rose-200">{error}</p>
-            ) : null}
-          </article>
-
-          <article className="surface-card space-y-3">
-            <h3 className="text-base font-semibold text-slate-900">Latest result</h3>
             {result ? (
-              <>
-                <audio className="w-full" controls src={result.audioUrl} />
-                <p className="text-xs text-slate-600">Prompt ID: {result.promptId}</p>
-
-                <div className="flex gap-2">
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                <audio style={{ width: "100%", borderRadius: "0.5rem" }} controls src={result.audioUrl} />
+                <p style={{ fontSize: "0.67rem", color: "var(--text-muted)", fontFamily: "monospace", wordBreak: "break-all" }}>
+                  {result.promptId}
+                </p>
+                <div style={{ display: "flex", gap: "0.5rem" }}>
                   {isAuthenticated ? (
                     <a
                       href={result.persistedAudioUrl ?? result.audioUrl}
-                      className="flex-1 rounded-xl border border-teal-300/50 bg-teal-400/15 px-3 py-2 text-center text-sm font-semibold text-teal-100 hover:border-teal-200"
                       download
+                      style={{
+                        flex: 1, textAlign: "center", textDecoration: "none",
+                        fontSize: "0.8rem", fontWeight: 600,
+                        padding: "0.5rem 0.5rem",
+                        borderRadius: "0.5rem",
+                        border: "1px solid rgba(45,212,191,0.3)",
+                        background: "rgba(45,212,191,0.08)",
+                        color: "#2dd4bf",
+                        transition: "all 150ms",
+                      }}
                     >
-                      Download
+                      ⬇ Download
                     </a>
                   ) : (
-                    <button
-                      type="button"
-                      onClick={() => requireAuthAction("download")}
-                      className="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-900"
-                    >
+                    <button type="button" onClick={() => requireAuthAction("download")} style={{ flex: 1, fontSize: "0.8rem", fontWeight: 600, padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)", color: "var(--text-secondary)", cursor: "pointer" }}>
                       Login to download
                     </button>
                   )}
-
                   <Link
                     href={isAuthenticated ? "/library" : "/login?next=/library"}
-                    className="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-center text-sm font-semibold text-slate-900"
+                    style={{
+                      flex: 1, textAlign: "center", textDecoration: "none",
+                      fontSize: "0.8rem", fontWeight: 600,
+                      padding: "0.5rem",
+                      borderRadius: "0.5rem",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      background: "rgba(255,255,255,0.04)",
+                      color: "var(--text-secondary)",
+                    }}
                   >
-                    {isAuthenticated ? "Open library" : "Login for library"}
+                    {isAuthenticated ? "Library" : "Login"}
                   </Link>
                 </div>
-              </>
+              </div>
             ) : (
-              <p className="text-sm text-slate-600">Your generated audio preview appears here.</p>
+              <div style={{ padding: "1.5rem 0", textAlign: "center" }}>
+                <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.15)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 0.6rem" }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.8">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                </div>
+                <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: 1.5 }}>
+                  Audio preview appears here after generation.
+                </p>
+              </div>
             )}
-          </article>
-        </aside>
+          </Card>
+        </div>
       </div>
+
+      <style>{`
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 0.3; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1); }
+        }
+        textarea:focus, input:focus { outline: none; border-color: rgba(99,102,241,0.6) !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+      `}</style>
     </section>
   );
 }

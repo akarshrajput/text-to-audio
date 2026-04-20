@@ -1,41 +1,86 @@
 import Link from "next/link";
 
 const footerLinks = [
-  { href: "/services", label: "Services" },
-  { href: "/features", label: "Features" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/terms", label: "Terms" },
-  { href: "/privacy", label: "Privacy" },
+  {
+    title: "Product",
+    items: [
+      { href: "/studio", label: "Studio" },
+      { href: "/services", label: "Services" },
+      { href: "/features", label: "Features" },
+      { href: "/pricing", label: "Pricing" },
+    ],
+  },
+  {
+    title: "Company",
+    items: [
+      { href: "/about", label: "About" },
+      { href: "/contact", label: "Contact" },
+      { href: "/faq", label: "FAQ" },
+    ],
+  },
+  {
+    title: "Legal",
+    items: [
+      { href: "/terms", label: "Terms of Service" },
+      { href: "/privacy", label: "Privacy Policy" },
+    ],
+  },
 ];
 
 export function SiteFooter() {
   return (
-    <footer className="mt-12 border-t border-slate-200 bg-slate-50">
-      <div className="site-container grid w-full gap-6 px-4 py-8 sm:px-6 lg:px-8">
-        <div>
-          <p className="text-sm font-semibold text-slate-900">Songify</p>
-          <p className="mt-2 max-w-2xl text-sm text-slate-600">
-            Professional text-to-audio, speech tone, and AI music generation workflows for creators and teams.
+    <footer style={{ borderTop: "1px solid rgba(255,255,255,0.06)", background: "rgba(6,8,16,0.9)", marginTop: "5rem" }}>
+      <div className="site-container grid gap-10 px-4 py-14 sm:px-6 lg:px-8" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+
+        {/* Brand col */}
+        <div className="col-span-full lg:col-span-1" style={{ gridColumn: "1 / span 1" }}>
+          <Link href="/" className="flex items-center gap-2.5 mb-4" style={{ textDecoration: "none" }}>
+            <div style={{
+              width: 30, height: 30, borderRadius: 8,
+              background: "linear-gradient(135deg, #6366f1, #2dd4bf)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M9 18V5l12-2v13M9 18c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-2c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <span style={{ fontSize: "1rem", fontWeight: 700, color: "#f1f5f9", fontFamily: '"Space Grotesk", sans-serif' }}>
+              Songify
+            </span>
+          </Link>
+          <p style={{ fontSize: "0.83rem", color: "var(--text-muted)", lineHeight: 1.7, maxWidth: 220 }}>
+            Professional AI audio generation for creators, products, and teams.
           </p>
         </div>
 
-        <nav className="flex flex-wrap gap-2">
-          {footerLinks.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              prefetch={false}
-              className="rounded-full border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-cyan-500 hover:text-cyan-600"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        {/* Link columns */}
+        {footerLinks.map((group) => (
+          <div key={group.title}>
+            <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: "1rem" }}>
+              {group.title}
+            </p>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+              {group.items.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    prefetch={false}
+                    style={{ fontSize: "0.875rem", color: "var(--text-muted)", textDecoration: "none", transition: "color 150ms ease" }}
+                    className="hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
 
-        <p className="text-xs text-slate-500">© {new Date().getFullYear()} Songify. All rights reserved.</p>
+      <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }} className="site-container px-4 py-5 sm:px-6 lg:px-8">
+        <p style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
+          © {new Date().getFullYear()} Songify. All rights reserved.
+        </p>
       </div>
     </footer>
   );

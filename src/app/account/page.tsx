@@ -16,30 +16,49 @@ export default async function AccountPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
   const profile = user ? await getAppUserProfile(user.id) : null;
   const fullName = profile?.fullName ?? user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? "Name not set";
 
   return (
-    <main className="site-container flex w-full flex-1 flex-col px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-slate-900">Account</h1>
+    <main className="site-container w-full flex-1 px-4 py-12 sm:px-6 lg:px-8">
+      <div style={{ marginBottom: "2rem" }}>
+        <span className="badge badge-violet mb-3">Account</span>
+        <h1 style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: "2rem", fontWeight: 700, color: "var(--text-primary)" }}>
+          Account Settings
+        </h1>
+      </div>
 
-      <section className="mt-8 w-full max-w-3xl rounded-2xl border border-slate-300 bg-slate-100 p-6">
-        <p className="text-sm text-slate-600">Full Name</p>
-        <p className="mt-1 text-lg font-medium text-slate-900">{fullName}</p>
+      <div style={{ maxWidth: 560 }}>
+        <div className="glass-card" style={{ padding: "2rem" }}>
+          {/* Profile fields */}
+          <div style={{ display: "grid", gap: "1.5rem" }}>
+            {[
+              { label: "Full Name", value: fullName },
+              { label: "Email", value: profile?.email ?? user?.email ?? "—" },
+              { label: "Role", value: profile?.role ?? "user", accent: true },
+            ].map((field) => (
+              <div key={field.label} style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "1.25rem" }}>
+                <p style={{ fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "0.35rem" }}>
+                  {field.label}
+                </p>
+                <p style={{ fontSize: "1rem", fontWeight: 500, color: field.accent ? "var(--accent-violet)" : "var(--text-primary)" }}>
+                  {field.value}
+                </p>
+              </div>
+            ))}
+          </div>
 
-        <p className="mt-4 text-sm text-slate-600">Email</p>
-        <p className="mt-1 text-lg font-medium text-slate-900">{profile?.email ?? user?.email}</p>
-
-        <p className="mt-4 text-sm text-slate-600">Role</p>
-        <p className="mt-1 text-lg font-medium text-slate-900">{profile?.role ?? "user"}</p>
-
-        <form action={signOut} className="mt-6">
-          <button className="rounded-xl border border-rose-300/50 px-4 py-2 text-sm font-semibold text-rose-200 transition hover:border-rose-200 hover:text-white">
-            Sign out from all protected pages
-          </button>
-        </form>
-      </section>
+          {/* Sign out */}
+          <form action={signOut} className="mt-6">
+            <button type="submit" className="btn-danger">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+              </svg>
+              Sign out
+            </button>
+          </form>
+        </div>
+      </div>
     </main>
   );
 }

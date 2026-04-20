@@ -9,6 +9,12 @@ export const metadata: Metadata = buildMetadata({
   path: "/contact",
 });
 
+const contacts = [
+  { label: "General Support", value: "support@songify.fun", icon: "💬", desc: "For product questions, bug reports, and help with your account." },
+  { label: "Sales & Partnerships", value: "sales@songify.fun", icon: "🤝", desc: "For enterprise plans, API access, and custom integration discussions." },
+  { label: "Response Window", value: "Mon – Fri, within 24h", icon: "⏱️", desc: "Our team is available on weekdays and responds within one business day." },
+];
+
 export default function ContactPage() {
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", path: "/" },
@@ -16,19 +22,35 @@ export default function ContactPage() {
   ]);
 
   return (
-    <main className="site-container flex w-full flex-1 flex-col px-4 py-12 sm:px-6 lg:px-8">
+    <main className="site-container w-full flex-1 flex-col px-4 py-16 sm:px-6 lg:px-8">
       <JsonLd data={breadcrumbSchema} />
 
-      <h1 className="max-w-3xl text-4xl font-bold text-white">Contact Songify</h1>
-      <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
-        For support, partnerships, or enterprise deployment planning, reach out to our team.
-      </p>
+      <div style={{ maxWidth: 600, marginBottom: "3rem" }}>
+        <p className="section-eyebrow mb-3">Contact</p>
+        <h1 style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: "2.5rem", fontWeight: 700, color: "var(--text-primary)" }}>
+          Get in touch
+        </h1>
+        <p style={{ marginTop: "0.75rem", fontSize: "1rem", color: "var(--text-secondary)", lineHeight: 1.7 }}>
+          For support, partnerships, or enterprise deployment planning — reach out and our team will get back to you.
+        </p>
+      </div>
 
-      <section className="mt-8 w-full max-w-3xl rounded-2xl border border-white/10 bg-slate-900/60 p-6 text-sm text-slate-300">
-        <p><strong className="text-white">Email:</strong> support@songify.fun</p>
-        <p className="mt-2"><strong className="text-white">Sales:</strong> sales@songify.fun</p>
-        <p className="mt-2"><strong className="text-white">Response window:</strong> Monday to Friday, within 24 hours</p>
-      </section>
+      <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", maxWidth: 860 }}>
+        {contacts.map((c) => (
+          <div key={c.label} className="glass-card" style={{ padding: "1.5rem" }}>
+            <span style={{ fontSize: "1.6rem", display: "block", marginBottom: "0.75rem" }}>{c.icon}</span>
+            <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "0.4rem" }}>
+              {c.label}
+            </p>
+            <p style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.5rem" }}>
+              {c.value}
+            </p>
+            <p style={{ fontSize: "0.83rem", color: "var(--text-secondary)", lineHeight: 1.6 }}>
+              {c.desc}
+            </p>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }

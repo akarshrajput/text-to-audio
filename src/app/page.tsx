@@ -12,246 +12,306 @@ export const metadata: Metadata = buildMetadata({
   path: "/",
 });
 
-const serviceLinks = [
-  { href: "/services/text-to-speech", label: "Text to Speech" },
-  { href: "/services/ai-music-generation", label: "AI Music Generation" },
-  { href: "/services/voice-generation", label: "Voice Generation" },
-  { href: "/services/poem-to-audio", label: "Poem to Audio" },
-  { href: "/services/speech-tone-tools", label: "Speech Tone Tools" },
+const services = [
+  {
+    href: "/services/text-to-speech",
+    label: "Text to Speech",
+    desc: "Convert written content into natural-sounding speech with tone control.",
+    icon: "🎙️",
+    color: "#6366f1",
+  },
+  {
+    href: "/services/ai-music-generation",
+    label: "AI Music Generation",
+    desc: "Generate full AI music tracks from prompts without human artists.",
+    icon: "🎵",
+    color: "#2dd4bf",
+  },
+  {
+    href: "/services/voice-generation",
+    label: "Voice Generation",
+    desc: "Produce controllable synthetic voices across styles and languages.",
+    icon: "🔊",
+    color: "#a855f7",
+  },
+  {
+    href: "/services/poem-to-audio",
+    label: "Poem to Audio",
+    desc: "Turn poems and literary text into atmospheric audio narrations.",
+    icon: "📜",
+    color: "#f59e0b",
+  },
+  {
+    href: "/services/speech-tone-tools",
+    label: "Speech Tone Tools",
+    desc: "Fine-tune delivery style, pacing, and expressiveness for any voice.",
+    icon: "🎚️",
+    color: "#ec4899",
+  },
+];
+
+const features = [
+  {
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/>
+      </svg>
+    ),
+    title: "Granular Prompt Control",
+    desc: "Dial in genre, mood, vocal style, arrangement, and structure for repeatable, predictable output quality.",
+    accent: "#6366f1",
+  },
+  {
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+    ),
+    title: "Integrated Studio Workflow",
+    desc: "Go from idea to downloadable audio in minutes using one unified generation interface.",
+    accent: "#2dd4bf",
+  },
+  {
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    ),
+    title: "Secure Audio Library",
+    desc: "Save and organize every generated file in a private, account-scoped library with instant access.",
+    accent: "#a855f7",
+  },
+  {
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+    ),
+    title: "Production-Ready Outputs",
+    desc: "Every track is exportable and optimized for embedding in products, content, and marketing workflows.",
+    accent: "#f59e0b",
+  },
 ];
 
 const faqs = [
   {
     question: "What can I create with Songify?",
-    answer:
-      "You can create text to speech audio, tone-aware narration, poem to audio tracks, and AI-generated music without using human artists.",
+    answer: "You can create text to speech audio, tone-aware narration, poem to audio tracks, and AI-generated music without using human artists.",
   },
   {
     question: "Can I test Songify before creating an account?",
-    answer:
-      "Yes. Visitors can open Studio and generate one song in guest mode. Login unlocks downloads and library storage.",
+    answer: "Yes. Visitors can open Studio and generate one song in guest mode. Login unlocks downloads and library storage.",
   },
   {
     question: "Does Songify support production workflows?",
-    answer:
-      "Yes. Songify is designed for production with configurable prompts, saved outputs, and indexed audio history for authenticated users.",
+    answer: "Yes. Songify is designed for production with configurable prompts, saved outputs, and indexed audio history for authenticated users.",
   },
   {
     question: "Is Songify suitable for businesses?",
-    answer:
-      "Yes. Teams can use Songify for product demos, content pipelines, marketing audio, and branded voice or music generation.",
+    answer: "Yes. Teams can use Songify for product demos, content pipelines, marketing audio, and branded voice or music generation.",
   },
 ];
 
 export default async function Home() {
   const comfyUiOnline = await getComfyUiOnline();
 
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "Songify",
-    url: absoluteUrl("/"),
-    logo: absoluteUrl("/favicon.ico"),
-    sameAs: [],
-  };
-
-  const websiteSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: siteConfig.name,
-    url: absoluteUrl("/"),
-    description: siteConfig.description,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${absoluteUrl("/")}?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
-  };
-
-  const softwareSchema = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: "Songify",
-    applicationCategory: "MultimediaApplication",
-    operatingSystem: "Web",
-    url: absoluteUrl("/"),
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-    },
-    description: siteConfig.description,
-  };
-
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  };
-
-  const breadcrumbSchema = buildBreadcrumbSchema([
-    { name: "Home", path: "/" },
-  ]);
+  const organizationSchema = { "@context": "https://schema.org", "@type": "Organization", name: "Songify", url: absoluteUrl("/"), logo: absoluteUrl("/favicon.ico"), sameAs: [] };
+  const websiteSchema = { "@context": "https://schema.org", "@type": "WebSite", name: siteConfig.name, url: absoluteUrl("/"), description: siteConfig.description, potentialAction: { "@type": "SearchAction", target: `${absoluteUrl("/")}?q={search_term_string}`, "query-input": "required name=search_term_string" } };
+  const softwareSchema = { "@context": "https://schema.org", "@type": "SoftwareApplication", name: "Songify", applicationCategory: "MultimediaApplication", operatingSystem: "Web", url: absoluteUrl("/"), offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }, description: siteConfig.description };
+  const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map((item) => ({ "@type": "Question", name: item.question, acceptedAnswer: { "@type": "Answer", text: item.answer } })) };
+  const breadcrumbSchema = buildBreadcrumbSchema([{ name: "Home", path: "/" }]);
 
   return (
-    <main className="w-full flex-1 pb-12">
+    <main className="w-full flex-1 pb-20">
       <JsonLd data={organizationSchema} />
       <JsonLd data={websiteSchema} />
       <JsonLd data={softwareSchema} />
       <JsonLd data={faqSchema} />
       <JsonLd data={breadcrumbSchema} />
 
-      {!comfyUiOnline ? (
-        <section className="site-container px-4 pt-8 sm:px-6 lg:px-8">
-          <div className="rounded-3xl border border-amber-300/30 bg-gradient-to-r from-amber-950/55 via-slate-900 to-slate-900 px-6 py-4 shadow-[0_20px_60px_rgba(0,0,0,0.25)] ring-1 ring-white/5 backdrop-blur">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-              <div className="flex items-start gap-3">
-                <span className="mt-1 inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-amber-400 shadow-[0_0_0_6px_rgba(251,191,36,0.14)]" />
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300">Service status</p>
-                  <p className="mt-1 text-base font-semibold text-white">Studio backend is temporarily unavailable.</p>
-                </div>
-              </div>
-              <span className="inline-flex w-fit rounded-full border border-amber-300/30 bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-200">
-                Coming soon
-              </span>
-            </div>
+      {/* Offline banner */}
+      {!comfyUiOnline && (
+        <div className="site-container px-4 pt-6 sm:px-6 lg:px-8">
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: "0.6rem",
+            fontSize: "0.8rem", color: "#a5b4fc",
+            background: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.2)",
+            borderRadius: "999px", padding: "0.4rem 1rem",
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#6366f1", display: "inline-block", animation: "pulse-dot 1.5s ease-in-out infinite" }} />
+            Studio coming soon — sign up to be notified
           </div>
-        </section>
-      ) : null}
+        </div>
+      )}
 
-      <section className="site-container px-4 pt-10 sm:px-6 lg:px-8">
-        <div className="hero-stage p-8 sm:p-10 lg:p-14">
-          <div className="hero-content hero-grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-            <div>
-              <p className="hero-kicker">Songify AI Audio Platform</p>
-              <h1 className="mt-4 max-w-3xl text-4xl font-extrabold leading-tight text-slate-900 sm:text-5xl lg:text-6xl">
-                Build production-ready audio from text, tone, and music prompts.
-              </h1>
-              <p className="mt-5 max-w-2xl text-base leading-7 text-slate-700 sm:text-lg">
-                Generate speech, tone-aware narration, poem audio, and artist-free AI music in one professional
-                workspace built for teams, creators, and product builders.
+      {/* ── Hero ─────────────────────────────────────────────────── */}
+      <section className="site-container px-4 pt-20 pb-10 sm:px-6 lg:px-8 text-center">
+        <div className="fade-up">
+          <span className="hero-kicker">
+            <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#2dd4bf"/></svg>
+            AI Audio Platform
+          </span>
+        </div>
+
+        <h1 className="fade-up-delay-1 mt-7 text-5xl font-extrabold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl mx-auto max-w-4xl" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+          <span className="gradient-text">Build production-ready</span>
+          <br />
+          audio from text &amp; prompts.
+        </h1>
+
+        <p className="fade-up-delay-2 mt-6 text-lg leading-8 max-w-2xl mx-auto" style={{ color: "var(--text-secondary)" }}>
+          Generate speech, tone-aware narration, poem audio, and artist-free AI music in one
+          professional workspace — built for teams, creators, and product builders.
+        </p>
+
+        <div className="fade-up-delay-3 mt-8 flex flex-wrap gap-3 justify-center">
+          <Link href="/studio" prefetch={false} className="btn-primary" style={{ padding: "0.75rem 1.5rem", fontSize: "0.95rem" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Start Creating
+          </Link>
+          <Link href="/services" prefetch={false} className="btn-secondary" style={{ padding: "0.75rem 1.5rem", fontSize: "0.95rem" }}>
+            View Services
+          </Link>
+        </div>
+
+        {/* Trust mark */}
+        <p className="mt-8 text-xs" style={{ color: "var(--text-muted)" }}>
+          Free to try · No credit card required · Guest mode available
+        </p>
+      </section>
+
+      {/* ── Features Grid ─────────────────────────────────────────── */}
+      <section className="site-container px-4 pt-16 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
+          <p className="section-eyebrow">Platform Features</p>
+          <h2 className="mt-3 text-3xl font-bold" style={{ fontFamily: '"Space Grotesk", sans-serif', color: "var(--text-primary)" }}>
+            Everything you need in one workspace
+          </h2>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map((f) => (
+            <div key={f.title} className="glass-card glass-card-glow p-6">
+              <div style={{
+                width: 44, height: 44, borderRadius: 12,
+                background: `${f.accent}18`,
+                border: `1px solid ${f.accent}30`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: f.accent, marginBottom: "1rem",
+              }}>
+                {f.icon}
+              </div>
+              <h3 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.5rem" }}>
+                {f.title}
+              </h3>
+              <p style={{ fontSize: "0.83rem", color: "var(--text-secondary)", lineHeight: 1.65 }}>
+                {f.desc}
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  href="/studio"
-                  prefetch={false}
-                  className="rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
-                >
-                  Start Creating
-                </Link>
-                <Link
-                  href="/services"
-                  prefetch={false}
-                  className="hero-cta-dark rounded-full px-5 py-2.5 text-sm font-semibold transition"
-                >
-                  View Services
-                </Link>
-                <Link
-                  href="/pricing"
-                  prefetch={false}
-                  className="hero-cta-dark rounded-full px-5 py-2.5 text-sm font-semibold transition"
-                >
-                  Pricing
-                </Link>
-              </div>
             </div>
-
-            <div className="grid gap-3 self-start">
-              <article className="surface-card bg-slate-100">
-                <p className="text-xs uppercase tracking-[0.18em] text-cyan-600">Prompt Control</p>
-                <p className="mt-2 text-sm text-slate-700">
-                  Dial genre, mood, vocal style, arrangement, and structure for predictable output quality.
-                </p>
-              </article>
-              <article className="surface-card bg-slate-100">
-                <p className="text-xs uppercase tracking-[0.18em] text-cyan-600">Studio Workflow</p>
-                <p className="mt-2 text-sm text-slate-700">
-                  Go from idea to downloadable output in minutes using one integrated generation flow.
-                </p>
-              </article>
-              <article className="surface-card bg-slate-100">
-                <p className="text-xs uppercase tracking-[0.18em] text-cyan-600">Secure Storage</p>
-                <p className="mt-2 text-sm text-slate-700">
-                  Save and organize generated audio in a private library with account-level access controls.
-                </p>
-              </article>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      <section className="site-container mt-10 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold text-slate-900">Core audio services</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-          Each service page is optimized for a specific use case, making it easier for search engines and users to
-          discover exactly what they need.
-        </p>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {serviceLinks.map((service) => (
-            <Link
-              key={service.href}
-              href={service.href}
-              prefetch={false}
-              className="surface-card transition hover:border-cyan-300/50"
-            >
-              <h3 className="text-base font-semibold text-slate-900">{service.label}</h3>
-              <p className="mt-2 text-sm text-slate-600">See features, workflow, and best-fit scenarios.</p>
+      {/* ── Services ──────────────────────────────────────────────── */}
+      <section className="site-container px-4 pt-20 sm:px-6 lg:px-8">
+        <div className="mb-10">
+          <p className="section-eyebrow">Core Services</p>
+          <h2 className="mt-3 text-3xl font-bold" style={{ fontFamily: '"Space Grotesk", sans-serif', color: "var(--text-primary)" }}>
+            Purpose-built audio workflows
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm leading-7" style={{ color: "var(--text-secondary)" }}>
+            Each service is optimized for a specific use case — from spoken word to full AI music production.
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {services.map((s) => (
+            <Link key={s.href} href={s.href} prefetch={false} className="glass-card" style={{ padding: "1.5rem", textDecoration: "none", display: "block", transition: "all 220ms ease" }}>
+              <div className="flex items-center gap-3 mb-3">
+                <span style={{ fontSize: "1.5rem" }}>{s.icon}</span>
+                <h3 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--text-primary)" }}>{s.label}</h3>
+              </div>
+              <p style={{ fontSize: "0.83rem", color: "var(--text-secondary)", lineHeight: 1.65 }}>{s.desc}</p>
+              <div className="mt-4 flex items-center gap-1" style={{ fontSize: "0.78rem", color: s.color, fontWeight: 600 }}>
+                View service
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </div>
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="site-container mt-10 px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-slate-300 bg-slate-100 p-8">
-          <h2 className="text-2xl font-bold text-slate-900">Frequently asked questions</h2>
-          <div className="mt-6 space-y-4">
-            {faqs.map((item) => (
-              <article key={item.question} className="rounded-2xl border border-slate-300 bg-white p-4">
-                <h3 className="text-base font-semibold text-slate-900">{item.question}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{item.answer}</p>
-              </article>
-            ))}
-          </div>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/faq" prefetch={false} className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-900">
-              View full FAQ
+      {/* ── CTA Banner ────────────────────────────────────────────── */}
+      <section className="site-container px-4 pt-20 sm:px-6 lg:px-8">
+        <div style={{
+          borderRadius: "1.5rem",
+          padding: "3rem 2rem",
+          textAlign: "center",
+          background: "linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(45,212,191,0.10) 100%)",
+          border: "1px solid rgba(99,102,241,0.2)",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          <div style={{ position: "absolute", top: "-40%", left: "50%", transform: "translateX(-50%)", width: "80%", height: "200%", background: "radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 60%)", pointerEvents: "none" }} />
+          <p className="section-eyebrow relative" style={{ color: "#a5b4fc" }}>Get started today</p>
+          <h2 className="relative mt-4 text-3xl font-bold sm:text-4xl" style={{ fontFamily: '"Space Grotesk", sans-serif', color: "var(--text-primary)" }}>
+            Ready to create?
+          </h2>
+          <p className="relative mt-3 max-w-xl mx-auto text-sm leading-7" style={{ color: "var(--text-secondary)" }}>
+            Open the studio — no account needed for your first generation. Login to save, download, and build your audio library.
+          </p>
+          <div className="relative mt-7 flex flex-wrap gap-3 justify-center">
+            <Link href="/studio" prefetch={false} className="btn-primary" style={{ padding: "0.8rem 1.75rem" }}>
+              Open Studio
             </Link>
-            <Link href="/terms" prefetch={false} className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-900">
-              Terms
-            </Link>
-            <Link href="/privacy" prefetch={false} className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-900">
-              Privacy
+            <Link href="/pricing" prefetch={false} className="btn-secondary" style={{ padding: "0.8rem 1.75rem" }}>
+              View Pricing
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="site-container mt-8 px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap gap-3 rounded-2xl border border-slate-300 bg-slate-100 p-5 text-sm text-slate-600">
-          <Link href="/features" prefetch={false} className="text-slate-900 hover:text-cyan-600">
-            Features
+      {/* ── FAQ ───────────────────────────────────────────────────── */}
+      <section className="site-container px-4 pt-20 sm:px-6 lg:px-8">
+        <div className="mb-10">
+          <p className="section-eyebrow">FAQ</p>
+          <h2 className="mt-3 text-3xl font-bold" style={{ fontFamily: '"Space Grotesk", sans-serif', color: "var(--text-primary)" }}>
+            Frequently asked questions
+          </h2>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          {faqs.map((item) => (
+            <article key={item.question} className="glass-card" style={{ padding: "1.5rem" }}>
+              <h3 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.6rem" }}>
+                {item.question}
+              </h3>
+              <p style={{ fontSize: "0.83rem", color: "var(--text-secondary)", lineHeight: 1.7 }}>
+                {item.answer}
+              </p>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href="/faq" prefetch={false} className="btn-secondary" style={{ fontSize: "0.83rem", padding: "0.5rem 1rem" }}>
+            View full FAQ →
           </Link>
-          <Link href="/pricing" prefetch={false} className="text-slate-900 hover:text-cyan-600">
-            Pricing
+          <Link href="/terms" prefetch={false} className="btn-secondary" style={{ fontSize: "0.83rem", padding: "0.5rem 1rem" }}>
+            Terms
           </Link>
-          <Link href="/about" prefetch={false} className="text-slate-900 hover:text-cyan-600">
-            About
+          <Link href="/privacy" prefetch={false} className="btn-secondary" style={{ fontSize: "0.83rem", padding: "0.5rem 1rem" }}>
+            Privacy
           </Link>
-          <Link href="/contact" prefetch={false} className="text-slate-900 hover:text-cyan-600">
-            Contact
-          </Link>
-          <span className="ml-auto">Last updated: April 2026</span>
         </div>
       </section>
     </main>
   );
 }
-

@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
@@ -35,34 +36,66 @@ export default async function LibraryPage() {
   const songs = (data ?? []) as SongRow[];
 
   return (
-    <main className="site-container flex w-full flex-1 flex-col px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-white">Library</h1>
-      <p className="mt-2 text-slate-300">Your generated songs stored in Supabase.</p>
+    <main className="site-container w-full flex-1 px-4 py-12 sm:px-6 lg:px-8">
 
-      {error ? (
-        <p className="mt-6 rounded-xl border border-amber-400/40 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">
-          Could not load songs yet. Run the SQL migration in README and verify table policies.
-        </p>
-      ) : null}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem", marginBottom: "2rem" }}>
+        <div>
+          <span className="badge badge-teal mb-3">Library</span>
+          <h1 style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: "2rem", fontWeight: 700, color: "var(--text-primary)" }}>
+            Your Audio Library
+          </h1>
+          <p style={{ marginTop: "0.4rem", fontSize: "0.875rem", color: "var(--text-secondary)" }}>
+            {songs.length} track{songs.length !== 1 ? "s" : ""} saved
+          </p>
+        </div>
+        <Link href="/studio" className="btn-primary" style={{ textDecoration: "none" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Song
+        </Link>
+      </div>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {error && (
+        <div className="alert-warning mb-6">
+          Could not load songs. Run the SQL migration in README and verify table policies.
+        </div>
+      )}
+
+      {!error && songs.length === 0 && (
+        <div style={{ textAlign: "center", padding: "5rem 2rem" }}>
+          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(45,212,191,0.08)", border: "1px solid rgba(45,212,191,0.15)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1rem" }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" strokeWidth="1.5">
+              <path d="M9 18V5l12-2v13M9 18c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-2c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/>
+            </svg>
+          </div>
+          <p style={{ fontSize: "1rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.4rem" }}>No songs yet</p>
+          <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", marginBottom: "1.5rem" }}>Create your first track in the Studio and it will appear here.</p>
+          <Link href="/studio" className="btn-primary" style={{ textDecoration: "none" }}>Open Studio</Link>
+        </div>
+      )}
+
+      <section style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}>
         {songs.map((song) => (
-          <article key={song.id} className="surface-card">
-            <h2 className="line-clamp-1 text-base font-semibold text-white">{song.title ?? "Untitled song"}</h2>
-            <p className="mt-1 text-xs uppercase tracking-wide text-teal-300/90">
-              {(song.genre ?? "custom") + " / " + (song.mood ?? "original")}
+          <article key={song.id} className="glass-card" style={{ padding: "1.25rem" }}>
+            <h2 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginBottom: "0.4rem" }}>
+              {song.title ?? "Untitled song"}
+            </h2>
+            <p style={{ fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--accent-teal)", marginBottom: "0.75rem" }}>
+              {(song.genre ?? "custom")} / {(song.mood ?? "original")}
             </p>
-            <p className="mt-3 line-clamp-3 text-sm text-slate-300">{song.prompt_tags ?? "No tags saved"}</p>
-            {song.audio_url ? (
-              <audio className="mt-4 w-full" controls src={song.audio_url} preload="none" />
-            ) : null}
+            {song.prompt_tags && (
+              <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: 1.6, marginBottom: "0.75rem", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                {song.prompt_tags}
+              </p>
+            )}
+            {song.audio_url && (
+              <audio className="mt-3 w-full" controls src={song.audio_url} preload="none" />
+            )}
+            <p style={{ marginTop: "0.75rem", fontSize: "0.7rem", color: "var(--text-muted)" }}>
+              {new Date(song.created_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+            </p>
           </article>
         ))}
       </section>
-
-      {!error && songs.length === 0 ? (
-        <p className="mt-8 text-sm text-slate-400">No songs yet. Generate from the studio and save to your account.</p>
-      ) : null}
     </main>
   );
 }
