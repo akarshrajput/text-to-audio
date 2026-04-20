@@ -37,6 +37,9 @@ export const metadata: Metadata = {
   applicationName: siteConfig.name,
   icons: { icon: [{ url: "/favicon.ico" }], shortcut: [{ url: "/favicon.ico" }], apple: [{ url: "/favicon.ico" }] },
   manifest: "/manifest.webmanifest",
+  verification: {
+    google: "-yzuAlZ4A0mkD6E27JJXkhRS2J6E-hqmOYoPkz-jN04",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

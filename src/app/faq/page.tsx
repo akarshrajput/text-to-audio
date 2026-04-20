@@ -4,35 +4,59 @@ import { buildMetadata } from "@/lib/seo";
 import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = buildMetadata({
-  title: "FAQ",
-  description: "Read common questions about Songify text-to-audio workflows, AI music generation, account access, and output storage.",
+  title: "FAQ — Text to Song & AI Music Generator Questions Answered",
+  description: "Got questions about Songify? Learn how our free AI song generator turns text into songs, how the lyrics generator works, and what makes it the top AI music maker online.",
   path: "/faq",
 });
 
 const faqs = [
   {
-    question: "Can I use Songify without an account?",
-    answer: "Yes, Studio allows a guest generation. Account registration unlocks repeat generation, downloads, and library storage.",
+    question: "What is a text to song AI and how does Songify work?",
+    answer: "A text to song AI converts any written input — lyrics, a poem, a story, or even a single sentence — into a fully produced audio track. Songify's AI song generator reads your prompt, writes or adapts lyrics, selects a musical style, and renders a complete song in seconds. No music theory knowledge required.",
   },
   {
-    question: "What audio workflows are supported?",
-    answer: "Songify supports text to speech, tone-guided speech, poem narration, and AI music generation from prompts.",
+    question: "Is Songify really a free AI song generator?",
+    answer: "Yes. Songify lets you generate your first song without creating an account and at zero cost. Guest mode gives you one free generation per session. Sign up for free to unlock more generations, cloud storage, and MP3 downloads — no credit card needed.",
   },
   {
-    question: "Where are generated files stored?",
-    answer: "For logged-in users, generated outputs are stored in Supabase Storage and indexed in your private Songify library.",
+    question: "How is Songify different from other AI music generators?",
+    answer: "Most AI music generators create background music without vocals or lyrics. Songify is a complete AI song maker — it generates both the lyrics and the music together from a single text prompt. Think of it as a lyrics generator and an AI music maker rolled into one tool.",
   },
   {
-    question: "Can I use Songify for commercial projects?",
-    answer: "Commercial usage depends on your plan and legal terms. Contact sales for high-volume or enterprise scenarios.",
+    question: "Can I use Songify as a lyrics generator only?",
+    answer: "Yes. In the Studio, switch the mode to "Story → Song" or paste your own lyrics and set mode to "Use as lyrics". Songify's AI lyrics generator will adapt your text into a structured song format (verse, chorus, bridge) before producing the final audio.",
   },
   {
-    question: "How does seed / Vibe Lock work?",
-    answer: "Each generation uses a random seed. Enabling Vibe Lock pins the seed so subsequent generations are stylistically similar, helping you iterate without losing a great result.",
+    question: "What music genres does the AI song maker support?",
+    answer: "Songify supports a wide range of genres including Pop, Folk, Lo-fi, Rock, Jazz, Orchestral, Techno, Ambient, Reggae, and Lullaby. You can also mix moods and scenes to create a truly unique sound — making it one of the most flexible AI music generators available.",
   },
   {
-    question: "Which languages are supported?",
-    answer: "Currently English, German, Hindi, Spanish, and French are available. More languages are being added based on user demand.",
+    question: "Which languages can the AI music maker produce songs in?",
+    answer: "Currently Songify supports English, Hindi, Spanish, French, and German. Our AI lyrics generator has been tested with all five and produces natural, in-language output. More languages are being added — vote for yours in the community forum.",
+  },
+  {
+    question: "How long does it take to generate a song?",
+    answer: "Most songs are ready in under 60 seconds. Short clips (10–30 s) are typically done in 15–20 seconds. Longer tracks up to 3 minutes may take 45–90 seconds depending on server load. Songify is optimised to be the fastest free AI music generator online.",
+  },
+  {
+    question: "Can I download the AI-generated songs as MP3?",
+    answer: "Yes. Every track generated through Songify can be downloaded as an MP3 file. Logged-in users get instant one-click downloads from the Studio output panel and from their Library. Guest users can listen in-browser and sign up to save their track.",
+  },
+  {
+    question: "Who owns the songs created by Songify's AI song generator?",
+    answer: "You do. Songs generated with your prompt belong to you. Songify grants a broad licence for personal and commercial use. We recommend reading our Terms of Service for details on attribution and redistribution, especially for commercial projects.",
+  },
+  {
+    question: "Can I use Songify as a song generator for kids' content?",
+    answer: "Absolutely. Songify has a built-in Kid Safe mode that filters all output for family-friendly content. This makes it the ideal AI song maker for lullabies, classroom music, children's audiobooks, and educational videos.",
+  },
+  {
+    question: "Does Songify work on mobile devices?",
+    answer: "Yes. The Songify Studio and the homepage song generator are fully responsive and work on iOS and Android browsers. The waveform player, genre controls, and download button are all touch-friendly — create AI songs from your phone anywhere, anytime.",
+  },
+  {
+    question: "Is Songify the top AI platform for song lyrics?",
+    answer: "Songify is built specifically for the text-to-song use case: you type, AI writes the lyrics and composes the music. Unlike generic AI writing tools, Songify understands song structure (verse, pre-chorus, chorus, bridge) and produces output that sounds like a real track — making it one of the top AI platforms for song lyrics online.",
   },
 ];
 
