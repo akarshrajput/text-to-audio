@@ -24,7 +24,7 @@ const faqs = [
   },
   {
     question: "Can I use Songify as a lyrics generator only?",
-    answer: "Yes. In the Studio, switch the mode to "Story → Song" or paste your own lyrics and set mode to "Use as lyrics". Songify's AI lyrics generator will adapt your text into a structured song format (verse, chorus, bridge) before producing the final audio.",
+    answer: "Yes. In the Studio, switch the mode to \u2018Story \u2192 Song\u2019 or paste your own lyrics and set mode to \u2018Use as lyrics\u2019. Songify\u2019s AI lyrics generator will adapt your text into a structured song format (verse, chorus, bridge) before producing the final audio.",
   },
   {
     question: "What music genres does the AI song maker support?",
