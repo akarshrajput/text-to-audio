@@ -148,6 +148,7 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: siteConfig.name,
+    alternateName: ["Songify.fun", "Songify AI", "Text to Song"],
     url: absoluteUrl("/"),
     description: "Free AI song generator — turn any text into a song instantly.",
     potentialAction: {
@@ -204,7 +205,14 @@ export default async function Home() {
     })),
   };
 
-  const breadcrumbSchema = buildBreadcrumbSchema([{ name: "Home", path: "/" }]);
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Studio", path: "/studio" },
+    { name: "Pricing", path: "/pricing" },
+    { name: "Features", path: "/features" },
+    { name: "About", path: "/about" },
+    { name: "FAQ", path: "/faq" },
+  ]);
 
   return (
     <main className="w-full flex-1 pb-24">
@@ -226,7 +234,7 @@ export default async function Home() {
             }}
           >
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#6366f1", display: "inline-block", animation: "pulse-dot 1.5s ease-in-out infinite" }} />
-            Studio coming soon — sign up to be notified
+            Studio Coming Soon · Join the Waitlist
           </div>
         </div>
       )}

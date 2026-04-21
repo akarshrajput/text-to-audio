@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { JSONLD } from "@/components/json-ld";
 import { absoluteUrl, siteConfig } from "@/lib/seo";
 import "./globals.css";
 
@@ -45,6 +46,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="h-full antialiased">
+      <head>
+        <JSONLD />
+      </head>
       <body style={{ minHeight: "100vh", background: "var(--bg-base)", color: "var(--text-primary)" }}>
         <div className="app-bg">
           <div className="app-bg-grid" />

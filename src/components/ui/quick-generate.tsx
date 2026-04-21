@@ -144,7 +144,7 @@ export function QuickGenerate() {
             >
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
-            Generate Song
+            Generate<span className="hidden sm:inline"> Song</span>
           </button>
         </div>
       </div>
